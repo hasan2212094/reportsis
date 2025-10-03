@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Luarrab extends Model
+{
+    use HasFactory;
+    protected $fillable=[
+        'luarrabps_id',
+        'Needed_by',
+        'Qty',
+        'Unit',
+        'Date_actual',
+        'Toko',
+        'Transaksi',
+        'Total',
+    ];
+
+    public function getTransaksiBadgeAttribute()
+  {
+    switch ($this->Transaksi) {
+        case 0:
+            return '<span class="badge bg-success">Cash</span>';
+        case 1:
+            return '<span class="badge bg-warning">Transfer</span>';
+        default:
+            return '<span class="badge bg-secondary">Lainnya</span>';
+    }
+  }
+}
