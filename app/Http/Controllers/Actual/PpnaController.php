@@ -30,8 +30,9 @@ class PpnaController extends Controller
        }
 
     $data = $query->get();
+    $trashed = Ppna::onlyTrashed()->get();
 
-    return view('page.actual.ppna.index', compact('data'));
+    return view('page.actual.ppna.index', compact('data', 'trashed'));
     }
 
     /**
@@ -183,16 +184,26 @@ class PpnaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-         try {
-            $ppna = Ppna::findOrFail($id);
-            $ppna->delete();
-            return redirect()->route('page.ppna.index')->with('success', 'Pengajuan berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('page.ppna.index')->with('error', 'Terjadi kesalahan saat menghapus pengajuan.');
-        }
-    }
+   public function destroy($id)
+{
+    $item = Ppna::findOrFail($id);
+    $item->delete(); // soft delete
+    return redirect()->back()->with('success', 'Data berhasil dihapus (soft delete)');
+}
+
+public function restore($id)
+{
+    $item = Ppna::withTrashed()->findOrFail($id);
+    $item->restore();
+    return redirect()->back()->with('success', 'Data berhasil direstore');
+}
+
+public function forceDelete($id)
+{
+    $item = Ppna::withTrashed()->findOrFail($id);
+    $item->forceDelete();
+    return redirect()->back()->with('success', 'Data dihapus permanen');
+}
      public function exports()
     {
         return Excel::download(new PpnaExport, 'ppna.xlsx');

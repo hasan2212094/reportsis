@@ -28,8 +28,9 @@ class IndirectpController extends Controller
        }
 
     $data = $query->get();
+    $trashed = Indirectp::onlyTrashed()->get();
 
-    return view('page.pengajuan.indirectcost.index', compact('data'));
+    return view('page.pengajuan.indirectcost.index', compact('data', 'trashed'));
     
     }
 
@@ -182,16 +183,26 @@ Log::info('Membuat pengajuan dengan data: ' . json_encode($request->all()));
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-         try {
-            $direct = Indirectp::findOrFail($id);
-            $direct->delete();
-            return redirect()->route('page.indirectp.index')->with('success', 'direct cost berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('page.indirectp.index')->with('error', 'Terjadi kesalahan saat menghapus pengajuan.');
-        }
-    }
+     public function destroy($id)
+{
+    $item = Indirectp::findOrFail($id);
+    $item->delete(); // soft delete
+    return redirect()->back()->with('success', 'Data berhasil dihapus (soft delete)');
+}
+
+public function restore($id)
+{
+    $item = Indirectp::withTrashed()->findOrFail($id);
+    $item->restore();
+    return redirect()->back()->with('success', 'Data berhasil direstore');
+}
+
+public function forceDelete($id)
+{
+    $item = Indirectp::withTrashed()->findOrFail($id);
+    $item->forceDelete();
+    return redirect()->back()->with('success', 'Data dihapus permanen');
+}
      public function export(Request $request)
     {
         $start_date = $request->input('start_date');

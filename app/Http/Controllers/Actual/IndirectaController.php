@@ -30,8 +30,9 @@ class IndirectaController extends Controller
        }
 
     $data = $query->get();
+    $trashed = Indirecta::onlyTrashed()->get();
 
-    return view('page.actual.indirectcost.index', compact('data'));
+    return view('page.actual.indirectcost.index', compact('data', 'trashed'));
     }
 
     /**
@@ -184,16 +185,27 @@ class IndirectaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        try {
-            $indirecta = Indirecta::findOrFail($id);
-            $indirecta->delete();
-            return redirect()->route('page.indirecta.index')->with('success', 'Pengajuan berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('page.indirecta.index')->with('error', 'Terjadi kesalahan saat menghapus pengajuan.');
-        }
-    }
+      public function destroy($id)
+{
+    $item = Indirecta::findOrFail($id);
+    $item->delete(); // soft delete
+    return redirect()->back()->with('success', 'Data berhasil dihapus (soft delete)');
+}
+
+public function restore($id)
+{
+    $item = Indirecta::withTrashed()->findOrFail($id);
+    $item->restore();
+    return redirect()->back()->with('success', 'Data berhasil direstore');
+}
+
+public function forceDelete($id)
+{
+    $item = Indirecta::withTrashed()->findOrFail($id);
+    $item->forceDelete();
+    return redirect()->back()->with('success', 'Data dihapus permanen');
+}
+
 
     public function exports()
     {

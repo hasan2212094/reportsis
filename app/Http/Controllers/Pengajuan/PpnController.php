@@ -26,9 +26,10 @@ class PpnController extends Controller
         ]);
        }
 
-    $data = $query->get();
+     $data = $query->get();
+     $trashed = Ppn::onlyTrashed()->get();
 
-    return view('page.pengajuan.ppn.index', compact('data'));
+    return view('page.pengajuan.ppn.index', compact('data', 'trashed'));
     }
     /**
      * Show the form for creating a new resource.
@@ -178,17 +179,26 @@ Log::info('Membuat pengajuan dengan data: ' . json_encode($request->all()));
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        try {
-            $direct = Ppn::findOrFail($id);
-            $direct->delete();
-            return redirect()->route('page.ppn.index')->with('success', 'direct cost berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('page.ppn.index')->with('error', 'Terjadi kesalahan saat menghapus pengajuan.');
-        }
-    }
-    public function export(Request $request)
+    public function destroy($id)
+{
+    $item = Ppn::findOrFail($id);
+    $item->delete(); // soft delete
+    return redirect()->back()->with('success', 'Data berhasil dihapus (soft delete)');
+}
+
+public function restore($id)
+{
+    $item = Ppn::withTrashed()->findOrFail($id);
+    $item->restore();
+    return redirect()->back()->with('success', 'Data berhasil direstore');
+}
+
+public function forceDelete($id)
+{
+    $item = Ppn::withTrashed()->findOrFail($id);
+    $item->forceDelete();
+    return redirect()->back()->with('success', 'Data dihapus permanen');
+}    public function export(Request $request)
     {
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');

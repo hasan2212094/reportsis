@@ -27,8 +27,9 @@ class LuarrabController extends Controller
        }
 
     $data = $query->get();
+    $trashed = Luarrab::onlyTrashed()->get();
 
-    return view('page.actual.luarrab.index', compact('data'));
+    return view('page.actual.luarrab.index', compact('data', 'trashed'));
     }
 
     /**
@@ -183,16 +184,27 @@ class LuarrabController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        try {
-            $ppna = Luarrab::findOrFail($id);
-            $ppna->delete();
-            return redirect()->route('page.luarrab.index')->with('success', 'Pengajuan berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('page.luarrab.index')->with('error', 'Terjadi kesalahan saat menghapus pengajuan.');
-        }
-    }
+     public function destroy($id)
+{
+    $item = Luarrab::findOrFail($id);
+    $item->delete(); // soft delete
+    return redirect()->back()->with('success', 'Data berhasil dihapus (soft delete)');
+}
+
+public function restore($id)
+{
+    $item = Luarrab::withTrashed()->findOrFail($id);
+    $item->restore();
+    return redirect()->back()->with('success', 'Data berhasil direstore');
+}
+
+public function forceDelete($id)
+{
+    $item = Luarrab::withTrashed()->findOrFail($id);
+    $item->forceDelete();
+    return redirect()->back()->with('success', 'Data dihapus permanen');
+}
+
     public function export()
     {
         $luarrab = Luarrab::all();

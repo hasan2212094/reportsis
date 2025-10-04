@@ -21,10 +21,10 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'is_admin' => true
         ],[
-            'name' => 'safei',
-            'email' => 'safei@gmail.com',
+            'name' => 'hasan',
+            'email' => 'hasan@gmail.com',
             'password' => Hash::make('12345678'),
-            'is_admin' => false
+            'is_admin' => true
 
         ],[
             'name' => 'idris',

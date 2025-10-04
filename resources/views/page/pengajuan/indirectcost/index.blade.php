@@ -8,9 +8,9 @@
 
         @include('components.alert')
 
+        {{-- Tombol Aksi dan Filter --}}
         <div class="card p-3 mb-3">
             <div class="d-flex align-items-center justify-content-between">
-                {{-- Form filter --}}
                 <form method="GET" action="{{ route('page.indirectp.index') }}" class="d-flex gap-2 align-items-center mb-0">
                     <label for="start_date" class="mb-0">Periode:</label>
                     <input type="date" name="start_date" id="start_date" class="form-control form-control-sm"
@@ -21,9 +21,8 @@
                     <a href="{{ route('page.indirectp.index') }}" class="btn btn-sm btn-secondary">Reset</a>
                 </form>
 
-                {{-- Tombol aksi --}}
                 <div class="d-flex gap-2">
-                    <a href="{{ url('/indirectp/create') }}" class="btn btn-primary rounded-pill">Tambah data</a>
+                    <a href="{{ route('page.indirectp.create') }}" class="btn btn-primary rounded-pill">Tambah data</a>
                     <a href="{{ route('indirectp.export', [
                         'start_date' => request('start_date'),
                         'end_date' => request('end_date'),
@@ -33,61 +32,121 @@
             </div>
         </div>
 
-        <div class="table-responsive text-nowrap">
-            <table id="example" class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Id_item</th>
-                        <th>Item</th>
-                        <th>Qty</th>
-                        <th>Satuan</th>
-                        <th>Kebutuhan</th>
-                        <th>Tanggal Pengajuan</th>
-                        <th>Total</th>
-                        <th>Note</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data as $indirectcost)
-                        <tr>
-                            <td>{{ $indirectcost->item_id }}</td>
-                            <td>{{ $indirectcost->Item }}</td>
-                            <td>{{ $indirectcost->Qty }}</td>
-                            <td>{{ $indirectcost->Unit }}</td>
-                            <td>{{ $indirectcost->Needed_by }}</td>
-                            <td>{{ \Carbon\Carbon::parse($indirectcost->Date_pengajuan)->format('d-m-Y') }}</td>
-                            <td>Rp {{ number_format($indirectcost->Total, 0, ',', '.') }}</td>
-                            <td>{{ $indirectcost->Notes }}</td>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    @php
-                                        $selisihHari = \Carbon\Carbon::parse($indirectcost->Date_actual)->diffInDays(
-                                            now(),
-                                        );
-                                    @endphp
+        {{-- Tab: Data Aktif / Data Terhapus --}}
+        <ul class="nav nav-tabs mb-3" id="dataTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="aktif-tab" data-bs-toggle="tab" data-bs-target="#aktif"
+                    type="button">Data Aktif</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="hapus-tab" data-bs-toggle="tab" data-bs-target="#hapus" type="button">Data
+                    Terhapus</button>
+            </li>
+        </ul>
 
-                                    @if ($selisihHari <= 7)
-                                        {{-- Edit hanya muncul jika <= 7 hari --}}
-                                        <a href="{{ route('page.indirectp.edit', $indirectcost->id) }}"
-                                            class="btn btn-warning btn-sm">Edit</a>
-                                    @else
-                                        {{-- Kalau lebih dari 7 hari, tampilkan badge info --}}
-                                        <span class="badge bg-secondary">Edit Expired</span>
-                                    @endif
+        <div class="tab-content">
+            {{-- TAB 1: Data Aktif --}}
+            <div class="tab-pane fade show active" id="aktif" role="tabpanel">
+                <div class="table-responsive text-nowrap">
+                    <table id="example" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Id_item</th>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Satuan</th>
+                                <th>Kebutuhan</th>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Total</th>
+                                <th>Note</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data as $indirectcost)
+                                <tr>
+                                    <td>{{ $indirectcost->item_id }}</td>
+                                    <td>{{ $indirectcost->Item }}</td>
+                                    <td>{{ $indirectcost->Qty }}</td>
+                                    <td>{{ $indirectcost->Unit }}</td>
+                                    <td>{{ $indirectcost->Needed_by }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($indirectcost->Date_pengajuan)->format('d-m-Y') }}</td>
+                                    <td>Rp {{ number_format($indirectcost->Total, 0, ',', '.') }}</td>
+                                    <td>{{ $indirectcost->Notes }}</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a href="{{ route('page.indirectp.edit', $indirectcost->id) }}"
+                                                class="btn btn-warning btn-sm">Edit</a>
+                                            <form class="form-soft-delete"
+                                                action="{{ route('page.indirectp.destroy', $indirectcost->id) }}"
+                                                method="POST" data-id="{{ $indirectcost->id }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                                    <form action="{{ route('page.indirectp.destroy', $indirectcost->id) }}" method="POST"
-                                        onsubmit="return confirm('Yakin mau hapus data ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            {{-- TAB 2: Data Terhapus --}}
+            <div class="tab-pane fade" id="hapus" role="tabpanel">
+                <div class="table-responsive text-nowrap">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID Item</th>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Satuan</th>
+                                <th>Kebutuhan</th>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Total</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($trashed as $indirectcost)
+                                <tr>
+                                    <td>{{ $indirectcost->item_id }}</td>
+                                    <td>{{ $indirectcost->Item }}</td>
+                                    <td>{{ $indirectcost->Qty }}</td>
+                                    <td>{{ $indirectcost->Unit }}</td>
+                                    <td>{{ $indirectcost->Needed_by }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($indirectcost->Date_pengajuan)->format('d-m-Y') }}</td>
+                                    <td>Rp {{ number_format($indirectcost->Total, 0, ',', '.') }}</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <form class="form-restore"
+                                                action="{{ route('page.indirectp.restore', $indirectcost->id) }}"
+                                                method="POST" data-id="{{ $indirectcost->id }}">
+                                                @csrf
+                                                <button class="btn btn-success btn-sm">Restore</button>
+                                            </form>
+
+                                            <form class="form-force-delete"
+                                                action="{{ route('page.indirectp.forceDelete', $indirectcost->id) }}"
+                                                method="POST" data-id="{{ $indirectcost->id }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus Permanen</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="text-center">Tidak ada data terhapus</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -95,54 +154,119 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#example').DataTable();
+            const tableAktif = $('#example').DataTable();
 
-            // Custom filter date range
-            $.fn.dataTable.ext.search.push(
-                function(settings, data, dataIndex) {
-                    var min = $('#start_date').val();
-                    var max = $('#end_date').val();
-                    var date = data[5]; // kolom ke-6 = Tanggal Pengajuan (format d-m-Y)
+            // === Soft Delete ===
+            $(document).on('submit', '.form-soft-delete', function(e) {
+                e.preventDefault();
+                if (!confirm('Yakin mau hapus data ini (soft delete)?')) return;
 
-                    if (date) {
-                        // ubah d-m-Y menjadi Date object
-                        var parts = date.split('-'); // [dd, mm, yyyy]
-                        var tableDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                let form = $(this);
+                let url = form.attr('action');
+                let row = form.closest('tr');
 
-                        var minDate = min ? new Date(min) : null;
-                        var maxDate = max ? new Date(max) : null;
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    data: form.serialize(),
+                    success: function(res) {
+                        if (res.status === 'success') {
+                            alert(res.message);
+                            // Pindahkan baris ke tab "terhapus"
+                            row.fadeOut(300, function() {
+                                let rowData = row.clone();
+                                row.remove();
 
-                        if (
-                            (!minDate && !maxDate) ||
-                            (!minDate && tableDate <= maxDate) ||
-                            (!maxDate && tableDate >= minDate) ||
-                            (tableDate >= minDate && tableDate <= maxDate)
-                        ) {
-                            return true;
+                                // tambahkan ke tabel terhapus
+                                $('#tbody-trashed').prepend(rowData);
+                                // ganti tombol jadi restore dan hapus permanen
+                                rowData.find('td:last').html(`
+                                <div class="d-flex gap-2">
+                                    <form class="form-restore" action="/directp/restore/${form.data('id')}" method="POST">
+                                        @csrf
+                                        <button class="btn btn-success btn-sm">Restore</button>
+                                    </form>
+                                    <form class="form-force-delete" action="/directp/force-delete/${form.data('id')}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm">Hapus Permanen</button>
+                                    </form>
+                                </div>
+                            `);
+                            });
                         }
-                        return false;
+                    },
+                    error: function(err) {
+                        alert('Terjadi kesalahan.');
                     }
-                    return true;
-                }
-            );
-
-            // tombol filter
-            $('#filter_date').on('click', function() {
-                table.draw();
+                });
             });
 
-            // reset filter
-            $('#reset_date').on('click', function() {
-                $('#start_date').val('');
-                $('#end_date').val('');
-                table.draw();
+            // === Restore ===
+            $(document).on('submit', '.form-restore', function(e) {
+                e.preventDefault();
+
+                let form = $(this);
+                let url = form.attr('action');
+                let row = form.closest('tr');
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(res) {
+                        if (res.status === 'success') {
+                            alert(res.message);
+                            // pindahkan ke tabel aktif
+                            row.fadeOut(300, function() {
+                                let rowData = row.clone();
+                                row.remove();
+
+                                rowData.find('td:last').html(`
+                                <div class="d-flex gap-2">
+                                    <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                                    <form class="form-soft-delete" action="/directp/${form.data('id')}" method="POST" data-id="${form.data('id')}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                    </form>
+                                </div>
+                            `);
+                                $('#example tbody').prepend(rowData);
+                            });
+                        }
+                    },
+                    error: function() {
+                        alert('Gagal restore data.');
+                    }
+                });
             });
 
-            // trigger filter saat tekan Enter di input
-            $('#start_date, #end_date').on('keyup change', function(e) {
-                if (e.key === 'Enter') {
-                    table.draw();
-                }
+            // === Force Delete ===
+            $(document).on('submit', '.form-force-delete', function(e) {
+                e.preventDefault();
+                if (!confirm('Yakin hapus permanen data ini?')) return;
+
+                let form = $(this);
+                let url = form.attr('action');
+                let row = form.closest('tr');
+
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    data: form.serialize(),
+                    success: function(res) {
+                        if (res.status === 'success') {
+                            alert(res.message);
+                            row.fadeOut(300, function() {
+                                row.remove();
+                            });
+                        }
+                    },
+                    error: function() {
+                        alert('Gagal menghapus permanen.');
+                    }
+                });
             });
         });
     </script>

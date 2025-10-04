@@ -149,11 +149,6 @@
                             <div>List Users</div>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a href="/roles" class="menu-link">
-                            <div>Roles & Permissions</div>
-                        </a>
-                    </li>
                 </ul>
             </li>
         @endif

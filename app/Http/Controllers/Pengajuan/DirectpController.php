@@ -27,8 +27,9 @@ class DirectpController extends Controller
        }
 
     $data = $query->get();
+    $trashed = DirectP::onlyTrashed()->get();
 
-    return view('page.pengajuan.Directcost.index', compact('data'));
+    return view('page.pengajuan.Directcost.index', compact('data', 'trashed'));
     }
 
     /**
@@ -185,16 +186,27 @@ public function store(Request $request)
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        try {
-            $direct = DirectP::findOrFail($id);
-            $direct->delete();
-            return redirect()->route('page.pengajuan.Directcost.index')->with('success', 'direct cost berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('page.pengajuan.Directcost.index')->with('error', 'Terjadi kesalahan saat menghapus pengajuan.');
-        }
-    }
+     public function destroy($id)
+{
+    $item = DirectP::findOrFail($id);
+    $item->delete(); // soft delete
+    return redirect()->back()->with('success', 'Data berhasil dihapus (soft delete)');
+}
+
+public function restore($id)
+{
+    $item = DirectP::withTrashed()->findOrFail($id);
+    $item->restore();
+    return redirect()->back()->with('success', 'Data berhasil direstore');
+}
+
+public function forceDelete($id)
+{
+    $item = DirectP::withTrashed()->findOrFail($id);
+    $item->forceDelete();
+    return redirect()->back()->with('success', 'Data dihapus permanen');
+}
+
     public function export(Request $request)
     {
         $start_date = $request->get('start_date');

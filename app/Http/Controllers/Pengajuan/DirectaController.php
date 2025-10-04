@@ -28,8 +28,9 @@ class DirectaController extends Controller
        }
 
     $data = $query->get();
+    $trashed = Directa::onlyTrashed()->get();
 
-    return view('page.actual.Directcost.index', compact('data'));
+    return view('page.actual.Directcost.index', compact('data', 'trashed'));
     }
 
     
@@ -184,20 +185,32 @@ class DirectaController extends Controller
         ->route('page.directa.index')
         ->with('success', 'Pengajuan berhasil diperbarui.');
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        try {
-            $directa = Directa::findOrFail($id);
-            $directa->delete();
-            return redirect()->route('page.directa.index')->with('success', 'Pengajuan berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('page.directa.index')->with('error', 'Terjadi kesalahan saat menghapus pengajuan.');
-        }
-    }
+     public function destroy($id)
+{
+    $item = Directa::findOrFail($id);
+    $item->delete(); // soft delete
+    return redirect()->back()->with('success', 'Data berhasil dihapus (soft delete)');
+}
+
+public function restore($id)
+{
+    $item = Directa::withTrashed()->findOrFail($id);
+    $item->restore();
+    return redirect()->back()->with('success', 'Data berhasil direstore');
+}
+
+public function forceDelete($id)
+{
+    $item = Directa::withTrashed()->findOrFail($id);
+    $item->forceDelete();
+    return redirect()->back()->with('success', 'Data dihapus permanen');
+}
+
     public function export()
   {
     return Excel::download(new DirectaExport, 'directa.xlsx');
