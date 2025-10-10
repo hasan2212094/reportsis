@@ -36,31 +36,32 @@ class PpnExport implements FromCollection, WithHeadings, WithMapping, WithStyles
      public function headings(): array
     {
         return [
-            // Ganti Judul jika memang ini untuk INDIRECT Cost
-            ['LAPORAN PPN PENGAJUAN'], 
+               ['LAPORAN PPN PENGAJUAN'], // Baris 1: Judul Utama
             [ 
                 'ID_ITEM',
                 'ITEM',
                 'QTY',
                 'SATUAN',
-                'KEBUTUH', 
-                'TANGGAL', 
+                'KEBUTUHAN',
+                'WORKORDER', 
+                'TANGGAL', // Diubah dari 'TANGGAL PENGAJUAN'
                 'TOTAL',
-                'NOTE', 
-            ] 
+                'NOTE', // Diubah dari 'Notes'
+            ] // Baris 2: Heading Tabel
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->item_id,
+          $row->item_id,
             $row->Item,
             $row->Qty,
             $row->Unit,
             $row->Needed_by,
-            $row->Date_pengajuan ? \Carbon\Carbon::parse($row->Date_pengajuan)->format('d-m-Y') : '', 
-            (int)$row->Total, 
+            optional($row->workorder)->kode_wo ?? '-', // WORKORDER
+            $row->Date_pengajuan ? \Carbon\Carbon::parse($row->Date_pengajuan)->format('d-m-Y') : '',
+            (int)$row->Total,
             $row->Notes,
         ];
     }
@@ -70,7 +71,7 @@ class PpnExport implements FromCollection, WithHeadings, WithMapping, WithStyles
         $highestColumn = $sheet->getHighestColumn(); // Dapatkan kolom terakhir (misal H)
         
         // 1. Merge dan Center Judul Utama (Baris 1) menggunakan highestColumn
-        $sheet->mergeCells('A1:' . $highestColumn . '1'); 
+        $sheet->mergeCells('A1:I1');  
         $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         $lastRow = $sheet->getHighestRow();

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Indirecta extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
     const DELETED_AT = 'deleted_at';
     protected $fillable=[
         'indirectps_id',

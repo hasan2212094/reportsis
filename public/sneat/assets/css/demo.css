@@ -105,3 +105,20 @@
   text-align: center;
   margin-top: 1rem;
 }
+.menu-sub .menu-item::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Tambahan: pastikan tidak ada list-style bawaan */
+.menu-sub {
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+
+/* Sedikit perapihan icon panah */
+.menu-sub .menu-link i {
+  font-size: 1rem;
+  margin-right: 6px;
+  color: #697a8d;
+}

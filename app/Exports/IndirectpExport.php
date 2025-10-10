@@ -46,7 +46,7 @@ class IndirectpExport implements FromCollection, WithHeadings, WithMapping, With
                 'ITEM',
                 'QTY',
                 'SATUAN',
-                'KEBUTUH', 
+                'KEBUTUHAN', 
                 'TANGGAL', 
                 'TOTAL',
                 'NOTE', 

@@ -14,6 +14,7 @@ class DirectP extends Model
         'item_id',
         'Item',
         'Qty',
+        'Workorder_id',
         'Unit',
         'Needed_by',
         'Date_pengajuan',
@@ -25,4 +26,8 @@ class DirectP extends Model
         return $this->hasMany(Directa::class, 'direct_p_s_id');
     }
     
+ public function workorder()
+    {
+        return $this->belongsTo(Workorder::class, 'workorder_id');
+    }
 }

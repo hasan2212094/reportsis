@@ -17,11 +17,13 @@ return new class extends Migration
             $table->string('Item');
             $table->string('Qty');
             $table->string('Unit');
-            $table->string('Needed_by');
+            $table->string('Needed_by')->nullable(); // ✅ bisa dikosongkan
+            $table->unsignedBigInteger('workorder_id')->nullable(); // bisa dikosongkan juga
             $table->date('Date_pengajuan');
             $table->string('Total');
             $table->text('Notes')->nullable();
             $table->timestamps();
+            $table->foreign('workorder_id')->references('id')->on('workorders')->onDelete('set null');
         });
     }
 

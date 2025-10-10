@@ -26,11 +26,20 @@
             <form action="{{ route('page.indirectp.store') }}" method="POST">
                 @csrf
                 <div class="row g-2">
-                    <div class="col-md-1">
-                        <div class="mb-2">
-                            <label for="item_id" class="form-label small text-secondary">ITEM ID</label>
-                            <input type="text" name="item_id" class="form-control form-control-sm shadow-sm rounded-3"
-                                value="{{ old('item_id') }}" oninput="this.value = this.value.toUpperCase()">
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="item_id" class="form-label">Pilih ITEM ID</label>
+                            <select name="item_id" id="item_id" class="form-control form-control-sm shadow-sm rounded-3"
+                                required onchange="handleItemChange()">
+                                <option value="">-- Pilih ITEM ID --</option>
+                                @for ($i = 1; $i <= 1000; $i++)
+                                    @php $formatted = str_pad($i, 4, '0', STR_PAD_LEFT); @endphp
+                                    <option value="ITEM{{ $formatted }}"
+                                        {{ old('item_id') == 'ITEM' . $formatted ? 'selected' : '' }}>
+                                        ITEM{{ $formatted }}
+                                    </option>
+                                @endfor
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -66,11 +75,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="mb-2">
                         <label for="Date_pengajuan" class="form-label small text-secondary">Tanggal Pengajuan</label>
                         <input type="date" name="Date_pengajuan" class="form-control form-control-sm shadow-sm rounded-3"
-                            value="{{ old('Date_pengajuan') }}">
+                            value="{{ old('Date_pengajuan') }}" onkeydown="return false">
                     </div>
                 </div>
                 <div class="col-md-6">

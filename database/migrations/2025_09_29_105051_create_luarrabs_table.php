@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('luarrabs', function (Blueprint $table) {
             $table->id();
             $table->string('luarrabps_id');
-            $table->string('Needed_by');
+            $table->string('Item');
+            $table->string('Needed_by')->nullable(); // ✅ bisa dikosongkan
+            $table->unsignedBigInteger('workorder_id')->nullable(); // bisa dikosongkan juga
             $table->string('Qty');
             $table->string('Unit');
             $table->date('Date_actual');
@@ -22,6 +24,7 @@ return new class extends Migration
             $table->integer('Transaksi')->default(0);
             $table->string('Total');
             $table->timestamps();
+            $table->foreign('workorder_id')->references('id')->on('workorders')->onDelete('set null');
         });
     }
 

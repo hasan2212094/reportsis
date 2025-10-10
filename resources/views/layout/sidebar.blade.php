@@ -110,6 +110,7 @@
         </li>
     </ul>
 </aside> --}}
+
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
         <a href="{{ route('home') }}" class="app-brand-link">
@@ -166,39 +167,105 @@
                         <div>Pengajuan</div>
                     </a>
                     <ul class="menu-sub ps-5">
-                        <li class="menu-item"><a href="/directp" class="menu-link">
+                        <li class="menu-item">
+                            <a href="/directp" class="menu-link d-flex align-items-center gap-2">
+                                <i class="bx bx-right-arrow-alt"></i>
                                 <div>Direct Cost</div>
-                            </a></li>
-                        <li class="menu-item"><a href="/indirectp" class="menu-link">
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="/indirectp" class="menu-link d-flex align-items-center gap-2">
+                                <i class="bx bx-right-arrow-alt"></i>
                                 <div>Indirect Cost</div>
-                            </a></li>
-                        <li class="menu-item"><a href="/ppn" class="menu-link">
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="/ppn" class="menu-link d-flex align-items-center gap-2">
+                                <i class="bx bx-right-arrow-alt"></i>
                                 <div>PPN</div>
-                            </a></li>
+                            </a>
+                        </li>
                     </ul>
                 </li>
-
                 {{-- Actual --}}
                 <li class="menu-item">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                         <div>Actual</div>
                     </a>
                     <ul class="menu-sub ps-5">
-                        <li class="menu-item"><a href="/directa" class="menu-link">
+                        <li class="menu-item"><a href="/directa" class="menu-link d-flex align-items-center gap-2">
+                                <i class="bx bx-right-arrow-alt"></i>
                                 <div>Direct Cost</div>
                             </a></li>
-                        <li class="menu-item"><a href="/indirecta" class="menu-link">
+                        <li class="menu-item"><a href="/indirecta" class="menu-link d-flex align-items-center gap-2">
+                                <i class="bx bx-right-arrow-alt"></i>
                                 <div>Indirect Cost</div>
                             </a></li>
-                        <li class="menu-item"><a href="/ppna" class="menu-link">
+                        <li class="menu-item"><a href="/ppna" class="menu-link d-flex align-items-center gap-2">
+                                <i class="bx bx-right-arrow-alt"></i>
                                 <div>PPN</div>
                             </a></li>
-                        <li class="menu-item"><a href="/luarrab" class="menu-link">
+                        <li class="menu-item"><a href="/luarrab" class="menu-link d-flex align-items-center gap-2">
+                                <i class="bx bx-right-arrow-alt"></i>
                                 <div>Diluar RAB</div>
                             </a></li>
                     </ul>
                 </li>
             </ul>
+            <ul class="menu-sub ps-5">
+                <li class="menu-item">
+                    <a href="{{ route('report.pengajuan_actual') }}" class="menu-link">
+                        <div>Report Pengajuan & Actual</div>
+                    </a>
+                </li>
+            </ul>
         </li>
+    </ul>
+    </li>
+    {{-- <li class="menu-item">
+            <a href="javascript:void(0)" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx bx-package"></i>
+                <div sdata-i18n="User interface">Purchasing</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="javascript:void(0)" class="menu-link menu-toggle">
+                        <div>Pengajuan</div>
+                    </a>
+                    <ul class="menu-sub ps-5">
+                        <li class="menu-item"><a href="" class="menu-link">
+                                <div>Direct Cost</div>
+                            </a></li>
+                        <li class="menu-item"><a href="" class="menu-link">
+                                <div>Indirect Cost</div>
+                            </a></li>
+                        <li class="menu-item"><a href="" class="menu-link">
+                                <div>PPN</div>
+                            </a></li>
+                    </ul>
+                </li>
+
+                
+                <li class="menu-item">
+                    <a href="javascript:void(0)" class="menu-link menu-toggle">
+                        <div>Actual</div>
+                    </a>
+                    <ul class="menu-sub ps-5">
+                        <li class="menu-item"><a href="" class="menu-link">
+                                <div>Direct Cost</div>
+                            </a></li>
+                        <li class="menu-item"><a href="" class="menu-link">
+                                <div>Indirect Cost</div>
+                            </a></li>
+                        <li class="menu-item"><a href="" class="menu-link">
+                                <div>PPN</div>
+                            </a></li>
+                        <li class="menu-item"><a href="" class="menu-link">
+                                <div>Diluar RAB</div>
+                            </a></li>
+                    </ul>
+                </li> --}}
+    </ul>
+    </li>
     </ul>
 </aside>

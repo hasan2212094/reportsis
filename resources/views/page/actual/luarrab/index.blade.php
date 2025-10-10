@@ -130,6 +130,7 @@
                     <table id="example" class="table table-hover">
                         <thead>
                             <tr>
+                                <th>ID Item</th>
                                 <th>Item</th>
                                 <th>Kebutuhan</th>
                                 <th>Qty Actual</th>
@@ -145,7 +146,8 @@
                             @foreach ($data as $luarrab)
                                 <tr>
                                     <td>{{ $luarrab->luarrabps_id }}</td>
-                                    <td>{{ $luarrab->Needed_by }}</td>
+                                    <td>{{ $luarrab->Item }}</td>
+                                    <td>{{ $luarrab->workorder->kode_wo ?? ($luarrab->Needed_by ?? '-') }}</td>
                                     <td>{{ $luarrab->Qty }}</td>
                                     <td>{{ $luarrab->Unit }}</td>
                                     <td>{{ \Carbon\Carbon::parse($luarrab->Date_actual)->format('d-m-Y') }}</td>
@@ -196,6 +198,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
+                                <th>ID Item</th>
                                 <th>Item</th>
                                 <th>Kebutuhan</th>
                                 <th>Qty Actual</th>
@@ -211,7 +214,8 @@
                             @forelse ($trashed as $luarrab)
                                 <tr>
                                     <td>{{ $luarrab->luarrabps_id }}</td>
-                                    <td>{{ $luarrab->Needed_by }}</td>
+                                    <td>{{ $luarrab->Item }}</td>
+                                    <td>{{ $luarrab->workorder->kode_wo ?? ($luarrab->Needed_by ?? '-') }}</td>
                                     <td>{{ $luarrab->Qty }}</td>
                                     <td>{{ $luarrab->Unit }}</td>
                                     <td>{{ \Carbon\Carbon::parse($luarrab->Date_actual)->format('d-m-Y') }}</td>
@@ -257,7 +261,6 @@
         </div>
     </div>
 @endsection
-
 @push('scripts')
     <script>
         $(document).ready(function() {
@@ -267,18 +270,23 @@
             $(document).on('submit', '.form-soft-delete', function(e) {
                 e.preventDefault();
                 if (!confirm('Yakin mau hapus data ini (soft delete)?')) return;
+
                 let form = $(this);
                 $.ajax({
                     url: form.attr('action'),
                     type: 'DELETE',
                     data: form.serialize(),
                     success: function(res) {
-                        alert(res.message);
-                        location.reload();
+                        if (res.status === 'success') {
+                            alert(res.message);
+                            location.reload(); // ✅ auto refresh
+                        } else {
+                            alert('Gagal hapus data.');
+                        }
                     },
                     error: function() {
-                        alert('Terjadi kesalahan saat menghapus.');
-                    },
+                        alert('Terjadi kesalahan.');
+                    }
                 });
             });
 
@@ -286,17 +294,22 @@
             $(document).on('submit', '.form-restore', function(e) {
                 e.preventDefault();
                 let form = $(this);
+
                 $.ajax({
                     url: form.attr('action'),
                     type: 'POST',
                     data: form.serialize(),
                     success: function(res) {
-                        alert(res.message);
-                        location.reload();
+                        if (res.status === 'success') {
+                            alert(res.message);
+                            location.reload(); // ✅ auto refresh
+                        } else {
+                            alert('Gagal restore data.');
+                        }
                     },
                     error: function() {
-                        alert('Gagal restore data.');
-                    },
+                        alert('Terjadi kesalahan saat restore.');
+                    }
                 });
             });
 
@@ -304,18 +317,23 @@
             $(document).on('submit', '.form-force-delete', function(e) {
                 e.preventDefault();
                 if (!confirm('Yakin hapus permanen data ini?')) return;
+
                 let form = $(this);
                 $.ajax({
                     url: form.attr('action'),
                     type: 'DELETE',
                     data: form.serialize(),
                     success: function(res) {
-                        alert(res.message);
-                        location.reload();
+                        if (res.status === 'success') {
+                            alert(res.message);
+                            location.reload(); // ✅ auto refresh
+                        } else {
+                            alert('Gagal hapus permanen.');
+                        }
                     },
                     error: function() {
-                        alert('Gagal menghapus permanen.');
-                    },
+                        alert('Terjadi kesalahan saat hapus permanen.');
+                    }
                 });
             });
         });

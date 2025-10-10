@@ -44,7 +44,8 @@ class DirectpExport implements FromCollection, WithHeadings, WithMapping, WithSt
                 'ITEM',
                 'QTY',
                 'SATUAN',
-                'KEBUTUH', 
+                'KEBUTUH',
+                'WORKORDER', 
                 'TANGGAL', // Diubah dari 'TANGGAL PENGAJUAN'
                 'TOTAL',
                 'NOTE', // Diubah dari 'Notes'
@@ -61,10 +62,9 @@ class DirectpExport implements FromCollection, WithHeadings, WithMapping, WithSt
             $row->Qty,
             $row->Unit,
             $row->Needed_by,
-            // Format tanggal 'DD-MM-YYYY' (lebih baik daripada 'DD-MM-202')
-            $row->Date_pengajuan ? \Carbon\Carbon::parse($row->Date_pengajuan)->format('d-m-Y') : '', 
-            // Kolom Total hanya berupa angka integer (800, 100) tanpa format ribuan
-            (int)$row->Total, 
+            optional($row->workorder)->kode_wo ?? '-', // WORKORDER
+            $row->Date_pengajuan ? \Carbon\Carbon::parse($row->Date_pengajuan)->format('d-m-Y') : '',
+            (int)$row->Total,
             $row->Notes,
         ];
     }
@@ -74,7 +74,7 @@ class DirectpExport implements FromCollection, WithHeadings, WithMapping, WithSt
     {
         // 1. Merge dan Center Judul Utama (Baris 1)
         // Asumsi tabel memiliki 8 kolom (A hingga H)
-        $sheet->mergeCells('A1:H1'); 
+        $sheet->mergeCells('A1:I1'); 
         $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         // Definisi styles dasar yang akan di-return (Judul dan Heading)
@@ -93,7 +93,7 @@ class DirectpExport implements FromCollection, WithHeadings, WithMapping, WithSt
         // 2. Penerapan Border Tebal pada Tabel
         $lastRow = $sheet->getHighestRow();
         // Range tabel: dari header (Baris 2) hingga data terakhir (Kolom H)
-        $range = 'A2:H' . $lastRow; 
+        $range = 'A2:I' . $lastRow; 
 
         $borderStyle = [
             'borders' => [

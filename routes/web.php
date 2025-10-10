@@ -1,12 +1,15 @@
 <?php
 
+use App\Models\Indirecta;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\dashboardController;
+use App\Http\Controllers\WorkorderController;
 use App\Http\Controllers\Actual\PpnaController;
 use App\Http\Controllers\Pengajuan\PpnController;
 use App\Http\Controllers\Actual\LuarrabController;
@@ -14,7 +17,6 @@ use App\Http\Controllers\Actual\IndirectaController;
 use App\Http\Controllers\Pengajuan\DirectaController;
 use App\Http\Controllers\Pengajuan\DirectpController;
 use App\Http\Controllers\Pengajuan\IndirectpController;
-use App\Models\Indirecta;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,7 @@ Route::middleware(['auth', 'can:isAdmin'])->group(function() {
     Route::get('/user', [UserController::class, 'index'])->name('user');
     Route::get('/table', [TableController::class, 'index'])->name('table.index');
 });
+Route::get('/workorders/search', [WorkorderController::class, 'search'])->name('workorders.search');
 
 Auth::routes();
 Route::middleware(['auth'])->group(function(){
@@ -128,7 +131,10 @@ Route::middleware(['guest'])->group(function(){
  Route::get('/luarrab/{id}', [LuarrabController::class, 'show'])->name('page.luarrab.show');
  Route::get('/luarrab/edit/{id}', [LuarrabController::class, 'edit'])->name('page.luarrab.edit');
  Route::put('/luarrab/{id}', [LuarrabController::class, 'update'])->name('page.luarrab.update');
-Route::delete('/luarrab/{id}', [LuarrabController::class, 'destroy'])->name('page.luarrab.destroy');
+ Route::delete('/luarrab/{id}', [LuarrabController::class, 'destroy'])->name('page.luarrab.destroy');
  Route::post('/luarrab/restore//{id}', [LuarrabController::class, 'restore'])->name('page.luarrab.restore');
  Route::delete('/luarrab/force-delete/{id}', [LuarrabController::class, 'forceDelete'])->name('page.luarrab.forceDelete');
  Route::get('/luarrab.export', [LuarrabController::class, 'export'])->name('page.luarrab.export');
+
+ Route::get('/report/actual', [ReportController::class, 'index'])->name('report.pengajuan_actual');
+ Route::get('/report/actual/{wo}', [ReportController::class, 'getData'])->name('report.actual.data');

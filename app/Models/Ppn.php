@@ -14,9 +14,10 @@ class Ppn extends Model
         'item_id',
         'Item',
         'Qty',
+        'Workorder_id',
         'Unit',
-        'Date_pengajuan',
         'Needed_by',
+        'Date_pengajuan',
         'Total',
         'Notes',
     ];
@@ -24,5 +25,9 @@ class Ppn extends Model
     public function ppnas()
     {
         return $this->hasMany(Ppna::class);
+    }
+     public function workorder()
+    {
+        return $this->belongsTo(Workorder::class, 'workorder_id');
     }
 }

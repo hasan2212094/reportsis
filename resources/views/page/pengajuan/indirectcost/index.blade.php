@@ -150,8 +150,86 @@
         </div>
     </div>
 @endsection
-
 @push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable();
+
+            // === Soft Delete ===
+            $(document).on('submit', '.form-soft-delete', function(e) {
+                e.preventDefault();
+                if (!confirm('Yakin mau hapus data ini (soft delete)?')) return;
+
+                let form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'DELETE',
+                    data: form.serialize(),
+                    success: function(res) {
+                        if (res.status === 'success') {
+                            alert(res.message);
+                            location.reload(); // ✅ auto refresh
+                        } else {
+                            alert('Gagal hapus data.');
+                        }
+                    },
+                    error: function() {
+                        alert('Terjadi kesalahan.');
+                    }
+                });
+            });
+
+            // === Restore ===
+            $(document).on('submit', '.form-restore', function(e) {
+                e.preventDefault();
+                let form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(res) {
+                        if (res.status === 'success') {
+                            alert(res.message);
+                            location.reload(); // ✅ auto refresh
+                        } else {
+                            alert('Gagal restore data.');
+                        }
+                    },
+                    error: function() {
+                        alert('Terjadi kesalahan saat restore.');
+                    }
+                });
+            });
+
+            // === Force Delete ===
+            $(document).on('submit', '.form-force-delete', function(e) {
+                e.preventDefault();
+                if (!confirm('Yakin hapus permanen data ini?')) return;
+
+                let form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'DELETE',
+                    data: form.serialize(),
+                    success: function(res) {
+                        if (res.status === 'success') {
+                            alert(res.message);
+                            location.reload(); // ✅ auto refresh
+                        } else {
+                            alert('Gagal hapus permanen.');
+                        }
+                    },
+                    error: function() {
+                        alert('Terjadi kesalahan saat hapus permanen.');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
+
+{{-- @push('scripts')
     <script>
         $(document).ready(function() {
             const tableAktif = $('#example').DataTable();
@@ -270,4 +348,4 @@
             });
         });
     </script>
-@endpush
+@endpush --}}

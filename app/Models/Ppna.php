@@ -34,4 +34,8 @@ class Ppna extends Model
             return '<span class="badge bg-secondary">Lainnya</span>';
     }
 }
+public function workorder()
+    {
+        return $this->belongsTo(Workorder::class, 'workorder_id');
+    }
 }

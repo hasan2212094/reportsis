@@ -30,9 +30,9 @@
                     <div class="col-md-1">
                         <div class="mb-2">
                             <label for="item_id" class="form-label small text-secondary">ID ITEM</label>
-                            <input type="text" name="item_id" class="form-control form-control-sm shadow-sm rounded-3"
-                                value="{{ old('item_id', $data->item_id) }}"
-                                oninput="this.value = this.value.toUpperCase()">
+                            <input type="text" class="form-control form-control-sm shadow-sm rounded-3 bg-light"
+                                value="{{ $data->item_id }}" disabled>
+                            <input type="hidden" name="item_id" value="{{ $data->item_id }}">
                         </div>
                     </div>
                 </div>

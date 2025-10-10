@@ -69,7 +69,15 @@
                                     <td>{{ $ppn->Item }}</td>
                                     <td>{{ $ppn->Qty }}</td>
                                     <td>{{ $ppn->Unit }}</td>
-                                    <td>{{ $ppn->Needed_by }}</td>
+                                    <td>
+                                        @if ($ppn->Needed_by)
+                                            {{ $ppn->Needed_by }}
+                                        @elseif ($ppn->workorder)
+                                            {{ $ppn->workorder->kode_wo }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>{{ \Carbon\Carbon::parse($ppn->Date_pengajuan)->format('d-m-Y') }}</td>
                                     <td>Rp {{ number_format($ppn->Total, 0, ',', '.') }}</td>
                                     <td>{{ $ppn->Notes }}</td>
@@ -109,14 +117,22 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tbody-trashed">
                             @forelse ($trashed as $ppn)
                                 <tr>
                                     <td>{{ $ppn->item_id }}</td>
                                     <td>{{ $ppn->Item }}</td>
                                     <td>{{ $ppn->Qty }}</td>
                                     <td>{{ $ppn->Unit }}</td>
-                                    <td>{{ $ppn->Needed_by }}</td>
+                                    <td>
+                                        @if ($ppn->Needed_by)
+                                            {{ $ppn->Needed_by }}
+                                        @elseif ($ppn->workorder)
+                                            {{ $ppn->workorder->kode_wo }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>{{ \Carbon\Carbon::parse($ppn->Date_pengajuan)->format('d-m-Y') }}</td>
                                     <td>Rp {{ number_format($ppn->Total, 0, ',', '.') }}</td>
                                     <td>
@@ -153,7 +169,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            const tableAktif = $('#example').DataTable();
+            $('#example').DataTable();
 
             // === Soft Delete ===
             $(document).on('submit', '.form-soft-delete', function(e) {
@@ -161,41 +177,19 @@
                 if (!confirm('Yakin mau hapus data ini (soft delete)?')) return;
 
                 let form = $(this);
-                let url = form.attr('action');
-                let row = form.closest('tr');
-
                 $.ajax({
-                    url: url,
+                    url: form.attr('action'),
                     type: 'DELETE',
                     data: form.serialize(),
                     success: function(res) {
                         if (res.status === 'success') {
                             alert(res.message);
-                            // Pindahkan baris ke tab "terhapus"
-                            row.fadeOut(300, function() {
-                                let rowData = row.clone();
-                                row.remove();
-
-                                // tambahkan ke tabel terhapus
-                                $('#tbody-trashed').prepend(rowData);
-                                // ganti tombol jadi restore dan hapus permanen
-                                rowData.find('td:last').html(`
-                                <div class="d-flex gap-2">
-                                    <form class="form-restore" action="/directp/restore/${form.data('id')}" method="POST">
-                                        @csrf
-                                        <button class="btn btn-success btn-sm">Restore</button>
-                                    </form>
-                                    <form class="form-force-delete" action="/directp/force-delete/${form.data('id')}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger btn-sm">Hapus Permanen</button>
-                                    </form>
-                                </div>
-                            `);
-                            });
+                            location.reload(); // ✅ auto refresh
+                        } else {
+                            alert('Gagal hapus data.');
                         }
                     },
-                    error: function(err) {
+                    error: function() {
                         alert('Terjadi kesalahan.');
                     }
                 });
@@ -204,39 +198,22 @@
             // === Restore ===
             $(document).on('submit', '.form-restore', function(e) {
                 e.preventDefault();
-
                 let form = $(this);
-                let url = form.attr('action');
-                let row = form.closest('tr');
 
                 $.ajax({
-                    url: url,
+                    url: form.attr('action'),
                     type: 'POST',
                     data: form.serialize(),
                     success: function(res) {
                         if (res.status === 'success') {
                             alert(res.message);
-                            // pindahkan ke tabel aktif
-                            row.fadeOut(300, function() {
-                                let rowData = row.clone();
-                                row.remove();
-
-                                rowData.find('td:last').html(`
-                                <div class="d-flex gap-2">
-                                    <a href="#" class="btn btn-warning btn-sm">Edit</a>
-                                    <form class="form-soft-delete" action="/directp/${form.data('id')}" method="POST" data-id="${form.data('id')}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                    </form>
-                                </div>
-                            `);
-                                $('#example tbody').prepend(rowData);
-                            });
+                            location.reload(); // ✅ auto refresh
+                        } else {
+                            alert('Gagal restore data.');
                         }
                     },
                     error: function() {
-                        alert('Gagal restore data.');
+                        alert('Terjadi kesalahan saat restore.');
                     }
                 });
             });
@@ -247,23 +224,20 @@
                 if (!confirm('Yakin hapus permanen data ini?')) return;
 
                 let form = $(this);
-                let url = form.attr('action');
-                let row = form.closest('tr');
-
                 $.ajax({
-                    url: url,
+                    url: form.attr('action'),
                     type: 'DELETE',
                     data: form.serialize(),
                     success: function(res) {
                         if (res.status === 'success') {
                             alert(res.message);
-                            row.fadeOut(300, function() {
-                                row.remove();
-                            });
+                            location.reload(); // ✅ auto refresh
+                        } else {
+                            alert('Gagal hapus permanen.');
                         }
                     },
                     error: function() {
-                        alert('Gagal menghapus permanen.');
+                        alert('Terjadi kesalahan saat hapus permanen.');
                     }
                 });
             });

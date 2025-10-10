@@ -12,6 +12,7 @@ class Luarrab extends Model
     
     protected $fillable=[
         'luarrabps_id',
+        'Item',
         'Needed_by',
         'Qty',
         'Unit',
@@ -32,4 +33,8 @@ class Luarrab extends Model
             return '<span class="badge bg-secondary">Lainnya</span>';
     }
   }
+  public function workorder()
+{
+    return $this->belongsTo(Workorder::class, 'workorder_id');
+}
 }

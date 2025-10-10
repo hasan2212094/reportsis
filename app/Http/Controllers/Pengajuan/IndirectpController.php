@@ -183,25 +183,85 @@ Log::info('Membuat pengajuan dengan data: ' . json_encode($request->all()));
     /**
      * Remove the specified resource from storage.
      */
-     public function destroy($id)
+      public function destroy($id)
 {
-    $item = Indirectp::findOrFail($id);
-    $item->delete(); // soft delete
-    return redirect()->back()->with('success', 'Data berhasil dihapus (soft delete)');
-}
+    try {
+        $item = Indirectp::findOrFail($id);
+        $item->delete();
 
+        Log::info('Berhasil soft delete', ['id' => $id]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus (soft delete)',
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Gagal soft delete', ['id' => $id, 'error' => $e->getMessage()]);
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Gagal menghapus data',
+        ], 500);
+    }
+}
 public function restore($id)
 {
-    $item = Indirectp::withTrashed()->findOrFail($id);
-    $item->restore();
-    return redirect()->back()->with('success', 'Data berhasil direstore');
+    try {
+        $item = Indirectp::withTrashed()->findOrFail($id);
+        $item->restore();
+
+        Log::info('Restore berhasil', ['id' => $id]);
+
+        if (request()->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil direstore',
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Data berhasil direstore');
+    } catch (\Exception $e) {
+        Log::error('Gagal restore', ['id' => $id, 'error' => $e->getMessage()]);
+
+        if (request()->ajax()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal restore data',
+            ], 500);
+        }
+
+        return redirect()->back()->withErrors('Gagal restore data');
+    }
 }
 
 public function forceDelete($id)
 {
-    $item = Indirectp::withTrashed()->findOrFail($id);
-    $item->forceDelete();
-    return redirect()->back()->with('success', 'Data dihapus permanen');
+    try {
+        $item = Indirectp::withTrashed()->findOrFail($id);
+        $item->forceDelete();
+
+        Log::info('Force delete berhasil', ['id' => $id]);
+
+        if (request()->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data dihapus permanen',
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Data dihapus permanen');
+    } catch (\Exception $e) {
+        Log::error('Gagal force delete', ['id' => $id, 'error' => $e->getMessage()]);
+
+        if (request()->ajax()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menghapus permanen',
+            ], 500);
+        }
+
+        return redirect()->back()->withErrors('Gagal menghapus permanen');
+    }
 }
      public function export(Request $request)
     {

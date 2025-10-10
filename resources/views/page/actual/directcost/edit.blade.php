@@ -70,11 +70,12 @@
                                 value="{{ old('Toko', $data->Toko) }}">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <div class="mb-2">
                             <label for="Date_actual" class="form-label small text-secondary">Tanggal Actual</label>
                             <input type="date" name="Date_actual"
-                                class="form-control form-control-sm shadow-sm rounded-3" value="{{ old('Date_actual') }}">
+                                class="form-control form-control-sm shadow-sm rounded-3"
+                                value="{{ old('Date_actual', $data->Date_actual) }}" onkeydown="return false">
                         </div>
                     </div>
                 </div>
