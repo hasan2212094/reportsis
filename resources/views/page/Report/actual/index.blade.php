@@ -14,6 +14,7 @@
                     @endforeach
                 </select>
                 <button id="btnLoad" class="btn btn-primary ms-2">Tampilkan</button>
+                <button id="btnExport" class="btn btn-success ms-2">Export Excel</button>
             </div>
         </div>
 
@@ -80,6 +81,19 @@
             document.getElementById('btnLoad').addEventListener('click', function() {
                 // isi kode fetch di sini...
             });
+        });
+    </script>
+    <script>
+        document.getElementById('btnExport').addEventListener('click', function() {
+            const woId = document.getElementById('wo_select').value;
+
+            if (!woId) {
+                alert('Pilih Work Order terlebih dahulu sebelum export!');
+                return;
+            }
+
+            // arahkan ke route export sesuai ID
+            window.location.href = `/report/export/${woId}`;
         });
     </script>
 @endsection

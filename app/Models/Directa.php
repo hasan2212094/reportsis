@@ -12,6 +12,7 @@ class Directa extends Model
 
     protected $fillable=[
         'direct_p_s_id',
+        'workorder_id',
         'Qty',
         'Unit',
         'Date_actual',
@@ -21,7 +22,7 @@ class Directa extends Model
     ];
    public function direct_ps()
 {
-    return $this->belongsTo(DirectP::class, 'direct_p_s_id');
+    return $this->belongsTo(DirectP::class, 'direct_p_s_id','id');
 }
 
     public function getTransaksiBadgeAttribute()
@@ -39,4 +40,5 @@ public function workorder()
     {
         return $this->belongsTo(Workorder::class, 'workorder_id');
     }
+     
 }

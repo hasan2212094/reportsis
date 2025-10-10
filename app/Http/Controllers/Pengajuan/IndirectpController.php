@@ -39,8 +39,22 @@ class IndirectpController extends Controller
      */
     public function create()
     {
-        $indirectp = Indirectp::all(); // ambil semua data dari tabel direct_p_s
-       return view('page.pengajuan.indirectcost.create', compact('indirectp'));
+        $itemList = Indirectp::select('item_id', 'Item')
+        ->orderBy('item_id')
+        ->get();
+
+    // Cari ITEM terakhir
+    $lastItem = Indirectp::orderBy('id', 'desc')->first();
+
+    if ($lastItem && preg_match('/ITEM(\d+)/', $lastItem->item_id, $matches)) {
+        $nextNumber = (int)$matches[1] + 1;
+    } else {
+        $nextNumber = 1;
+    }
+
+    // Format jadi ITEM003, ITEM010, dst
+    $newItemId = 'ITEM' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+       return view('page.pengajuan.indirectcost.create', compact('itemList', 'newItemId'));
     }
 
     /**

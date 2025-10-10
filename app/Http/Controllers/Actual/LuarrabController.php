@@ -38,17 +38,27 @@ class LuarrabController extends Controller
      */
     public function create()
     {
-       $itemList = Luarrab::select('luarrabps_id')->orderBy('luarrabps_id')->get();
+          $itemList = Luarrab::select('luarrabps_id', 'Item')
+        ->orderBy('luarrabps_id')
+        ->get();
+
+    // Ambil semua Workorder untuk dropdown
     $workorders = Workorder::orderBy('kode_wo', 'asc')->get();
 
-    $lastNumber = Luarrab::where('luarrabps_id', 'like', 'ITEM%')
-        ->selectRaw("CAST(SUBSTRING(luarrabps_id, 5) AS UNSIGNED) as num")
-        ->orderByDesc('num')
-        ->value('num');
+    // Cari Luar RAB terakhir
+    $lastItem = Luarrab::orderBy('id', 'desc')->first();
 
-    $newItemId = 'ITEM' . str_pad(($lastNumber ?? 0) + 1, 3, '0', STR_PAD_LEFT);
+    if ($lastItem && preg_match('/ITEM(\d+)/', $lastItem->luarrabps_id, $matches)) {
+        $nextNumber = (int) $matches[1] + 1;
+    } else {
+        $nextNumber = 1;
+    }
 
-    return view('page.actual.luarrab.create', compact('itemList', 'newItemId', 'workorders'));
+    // Format jadi ITEM0001, ITEM0002, dst
+    $newLuarrabpsId = 'ITEM' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+    // Kirim ke view
+    return view('page.actual.luarrab.create', compact('itemList', 'newLuarrabpsId', 'workorders'));
     }
 
     /**

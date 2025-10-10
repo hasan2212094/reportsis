@@ -127,17 +127,10 @@
                 {{-- ITEM ID --}}
                 <div class="col-md-2">
                     <div class="mb-3">
-                        <label for="item_id" class="form-label">Pilih ITEM ID</label>
-                        <select name="item_id" id="item_id" class="form-control form-control-sm shadow-sm rounded-3"
-                            required onchange="handleItemChange()">
-                            <option value="">-- Pilih ITEM ID --</option>
-                            @for ($i = 1; $i <= 1000; $i++)
-                                @php $formatted = str_pad($i, 4, '0', STR_PAD_LEFT); @endphp
-                                <option value="ITEM{{ $formatted }}"
-                                    {{ old('item_id') == 'ITEM' . $formatted ? 'selected' : '' }}>ITEM{{ $formatted }}
-                                </option>
-                            @endfor
-                        </select>
+                        <label for="item_id" class="form-label">ITEM ID (Otomatis)</label>
+                        <input type="text" name="item_id" id="item_id"
+                            class="form-control form-control-sm shadow-sm rounded-3 bg-light" value="{{ $newItemId }}"
+                            readonly>
                     </div>
                 </div>
             </div>

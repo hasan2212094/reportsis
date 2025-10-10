@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\Indirecta;
+use App\Exports\ActualExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
@@ -138,3 +140,4 @@ Route::middleware(['guest'])->group(function(){
 
  Route::get('/report/actual', [ReportController::class, 'index'])->name('report.pengajuan_actual');
  Route::get('/report/actual/{wo}', [ReportController::class, 'getData'])->name('report.actual.data');
+ Route::get('/report/export/{workorder_id}', [ReportController::class, 'exportActual'])->name('report.export');

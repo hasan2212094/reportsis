@@ -30,4 +30,8 @@ class DirectP extends Model
     {
         return $this->belongsTo(Workorder::class, 'workorder_id');
     }
+    public function directp()
+{
+    return $this->belongsTo(DirectP::class, 'direct_p_s_id', 'id');
+}
 }

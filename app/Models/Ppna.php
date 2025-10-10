@@ -12,6 +12,7 @@ class Ppna extends Model
      const DELETED_AT = 'deleted_at';
      protected $fillable=[
         'ppns_id',
+        'workorder_id',
         'Qty',
         'Unit',
         'Date_actual',
@@ -19,9 +20,9 @@ class Ppna extends Model
         'Transaksi',
         'Total',
     ];
-    public function ppn()
+public function ppn()
 {
-    return $this->belongsTo(Ppn::class, 'ppns_id');
+    return $this->belongsTo(Ppn::class, 'ppns_id', 'id');
 }
  public function getTransaksiBadgeAttribute()
 {

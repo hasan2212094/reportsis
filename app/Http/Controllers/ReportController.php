@@ -8,7 +8,10 @@ use App\Models\DirectP;
 use App\Models\Luarrab;
 use App\Models\Workorder;
 use Illuminate\Http\Request;
+use App\Exports\ActualExport;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -44,21 +47,22 @@ class ReportController extends Controller
         });
 
     // PPNA
-    $ppna = Ppna::join('ppns', 'ppns_id', '=', 'ppnas.ppns_id')
-        ->where('ppns.workorder_id', $wo)
-        ->select([
-            'ppnas.Qty as qty',
-            'ppnas.Unit as unit',
-            'ppnas.Date_actual as tanggal_actual',
-            'ppnas.Toko as toko',
-            'ppnas.Total as total',
-            'ppns.Item as item',
-        ])
-        ->get()
-        ->map(function ($row) {
-            $row->source = 'Ppn actual';
-            return $row;
-        });
+    $ppna = DB::table('ppnas as pa')
+    ->join('ppns as pn', 'pn.id', '=', 'pa.ppns_id')
+    ->where('pn.workorder_id', $wo)
+    ->select([
+        'pa.Qty as qty',
+        'pa.Unit as unit',
+        'pa.Date_actual as tanggal_actual',
+        'pa.Toko as toko',
+        'pa.Total as total',
+        'pn.Item as item',
+    ])
+    ->get()
+    ->map(function ($row) {
+        $row->source = 'Ppn actual';
+        return $row;
+    });
 
     $luarrab = Luarrab::leftJoin('workorders', 'workorders.id', '=', 'luarrabs.workorder_id')
     ->where('luarrabs.workorder_id', $wo)
@@ -83,6 +87,10 @@ class ReportController extends Controller
         ->values();
 
     return response()->json($data);
+}
+public function exportActual($workorder_id)
+{
+    return Excel::download(new ActualExport($workorder_id), 'report_actual_wo_' . $workorder_id . '.xlsx');
 }
 
 

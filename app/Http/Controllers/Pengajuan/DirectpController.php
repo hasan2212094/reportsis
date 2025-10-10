@@ -38,24 +38,45 @@ class DirectpController extends Controller
      */
     public function create()
   {
+    // $itemList = DirectP::select('item_id', 'Item')
+    //     ->orderBy('item_id')
+    //     ->get();
+
+    // // Ambil semua Workorder (No WO) untuk dropdown
+    // $workorders = Workorder::orderBy('kode_wo', 'asc')->get();
+
+    // // Auto-generate ID baru (misal: ITEM001, ITEM002, dst)
+    // $lastItem = DirectP::orderBy('id', 'desc')->first();
+    // if ($lastItem && preg_match('/ITEM(\d+)/', $lastItem->item_id, $matches)) {
+    //     $nextNumber = (int)$matches[1] + 1;
+    // } else {
+    //     $nextNumber = 1;
+    // }
+
+    // $newItemId = 'ITEM' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
+    // // Kirim data ke view
+    // return view('page.pengajuan.Directcost.create', compact('itemList', 'newItemId', 'workorders'));
+     // Ambil semua Item untuk referensi (kalau masih diperlukan)
     $itemList = DirectP::select('item_id', 'Item')
         ->orderBy('item_id')
         ->get();
 
-    // Ambil semua Workorder (No WO) untuk dropdown
+    // Ambil semua Workorder untuk dropdown
     $workorders = Workorder::orderBy('kode_wo', 'asc')->get();
 
-    // Auto-generate ID baru (misal: ITEM001, ITEM002, dst)
+    // Cari ITEM terakhir
     $lastItem = DirectP::orderBy('id', 'desc')->first();
+
     if ($lastItem && preg_match('/ITEM(\d+)/', $lastItem->item_id, $matches)) {
         $nextNumber = (int)$matches[1] + 1;
     } else {
         $nextNumber = 1;
     }
 
-    $newItemId = 'ITEM' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    // Format jadi ITEM003, ITEM010, dst
+    $newItemId = 'ITEM' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-    // Kirim data ke view
     return view('page.pengajuan.Directcost.create', compact('itemList', 'newItemId', 'workorders'));
 }
     /**
@@ -533,4 +554,13 @@ public function forceDelete($id)
         $directCost->needed_by = null;
     }
     }
+   public function checkItem($item_id)
+{
+    Log::info("Cek item dipanggil untuk: " . $item_id);
+
+    $exists = DB::table('direct_p_s')->where('item_id', $item_id)->exists();
+    Log::info("Item {$item_id} status: " . ($exists ? 'ADA' : 'BELUM ADA'));
+
+    return response()->json(['exists' => $exists]);
+}
 }

@@ -42,18 +42,20 @@ class PpnController extends Controller
         ->orderBy('item_id')
         ->get();
 
-    // Ambil semua Workorder (No WO) untuk dropdown
+    // Ambil semua Workorder untuk dropdown
     $workorders = Workorder::orderBy('kode_wo', 'asc')->get();
 
-    // Auto-generate ID baru (misal: ITEM001, ITEM002, dst)
+    // Cari ITEM terakhir
     $lastItem = Ppn::orderBy('id', 'desc')->first();
+
     if ($lastItem && preg_match('/ITEM(\d+)/', $lastItem->item_id, $matches)) {
         $nextNumber = (int)$matches[1] + 1;
     } else {
         $nextNumber = 1;
     }
 
-    $newItemId = 'ITEM' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    // Format jadi ITEM003, ITEM010, dst
+    $newItemId = 'ITEM' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
     // Kirim data ke view
     return view('page.pengajuan.ppn.create', compact('itemList', 'newItemId', 'workorders'));;
