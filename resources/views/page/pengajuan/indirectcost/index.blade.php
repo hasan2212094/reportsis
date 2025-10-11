@@ -75,8 +75,14 @@
                                     <td>{{ $indirectcost->Notes }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
-                                            <a href="{{ route('page.indirectp.edit', $indirectcost->id) }}"
-                                                class="btn btn-warning btn-sm">Edit</a>
+                                            {{-- <a href="{{ route('page.indirectp.edit', $indirectcost->id) }}"
+                                                class="btn btn-warning btn-sm">Edit</a> --}}
+                                            @if ($selisihHari <= 7)
+                                                <a href="{{ route('page.pengajuan.Directcost.edit', $directcost->id) }}"
+                                                    class="btn btn-warning btn-sm">Edit</a>
+                                            @else
+                                                <span class="badge bg-secondary">Edit Expired</span>
+                                            @endif
                                             <form class="form-soft-delete"
                                                 action="{{ route('page.indirectp.destroy', $indirectcost->id) }}"
                                                 method="POST" data-id="{{ $indirectcost->id }}">

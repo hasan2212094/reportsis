@@ -83,8 +83,14 @@
                                     <td>{{ $ppn->Notes }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
-                                            <a href="{{ route('page.ppn.edit', $ppn->id) }}"
-                                                class="btn btn-warning btn-sm">Edit</a>
+                                            {{-- <a href="{{ route('page.ppn.edit', $ppn->id) }}"
+                                                class="btn btn-warning btn-sm">Edit</a> --}}
+                                            @if ($selisihHari <= 7)
+                                                <a href="{{ route('page.ppn.edit', $ppn->id) }}"
+                                                    class="btn btn-warning btn-sm">Edit</a>
+                                            @else
+                                                <span class="badge bg-secondary">Edit Expired</span>
+                                            @endif
                                             <form class="form-soft-delete"
                                                 action="{{ route('page.ppn.destroy', $ppn->id) }}" method="POST"
                                                 data-id="{{ $ppn->id }}">
