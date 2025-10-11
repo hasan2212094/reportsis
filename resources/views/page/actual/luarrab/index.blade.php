@@ -169,7 +169,7 @@
                                                     now(),
                                                 );
                                             @endphp
-                                            @if ($selisihHari <= 7)
+                                            @if ($selisihHari <= 14)
                                                 <a href="{{ route('page.luarrab.edit', $luarrab->id) }}"
                                                     class="btn btn-warning btn-sm">Edit</a>
                                             @else

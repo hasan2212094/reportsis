@@ -1,3 +1,6 @@
+@php
+    use Carbon\Carbon;
+@endphp
 @extends('kerangka.master')
 @section('title', 'DirectCost Pengajuan')
 @section('content')
@@ -5,6 +8,7 @@
         <h4 class="fw-bold py-3 mb-4">
             <span class="text-muted fw-light">Tables /</span> DirectCost Pengajuan
         </h4>
+
 
         @include('components.alert')
 
@@ -83,15 +87,23 @@
                                     <td>Rp {{ number_format($directcost->Total, 0, ',', '.') }}</td>
                                     <td>{{ $directcost->Notes }}</td>
                                     <td>
+                                        @php
+                                            $selisihHari = Carbon::now()->diffInDays($directcost->created_at);
+                                        @endphp
                                         <div class="d-flex gap-2">
                                             {{-- <a href="{{ route('page.pengajuan.Directcost.edit', $directcost->id) }}"
                                                 class="btn btn-warning btn-sm">Edit</a> --}}
-                                            @if ($selisihHari <= 7)
-                                                <a href="{{ route('page.pengajuan.Directcost.edit', $directcost->id) }}"
-                                                    class="btn btn-warning btn-sm">Edit</a>
-                                            @else
-                                                <span class="badge bg-secondary">Edit Expired</span>
-                                            @endif
+                                            <div class="d-flex gap-2">
+                                                @if ($selisihHari <= 7)
+                                                    <a href="{{ route('page.pengajuan.Directcost.edit', $directcost->id) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        Edit
+                                                    </a>
+                                                @else
+                                                    <span class="badge bg-secondary p-2">Edit Expired ({{ $selisihHari }}
+                                                        hari)</span>
+                                                @endif
+                                            </div>
                                             <form class="form-soft-delete"
                                                 action="{{ route('page.Directcost.destroy', $directcost->id) }}"
                                                 method="POST" data-id="{{ $directcost->id }}">

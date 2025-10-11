@@ -173,7 +173,7 @@
                                                     $indirectcost->Date_actual,
                                                 )->diffInDays(now());
                                             @endphp
-                                            @if ($selisihHari <= 7)
+                                            @if ($selisihHari <= 14)
                                                 <a href="{{ route('page.indirecta.edit', $indirectcost->id) }}"
                                                     class="btn btn-warning btn-sm">Edit</a>
                                             @else

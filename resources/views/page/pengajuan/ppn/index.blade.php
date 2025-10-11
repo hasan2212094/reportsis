@@ -1,3 +1,6 @@
+@php
+    use Carbon\Carbon;
+@endphp
 @extends('kerangka.master')
 @section('title', 'PPN Pengajuan')
 @section('content')
@@ -82,14 +85,20 @@
                                     <td>Rp {{ number_format($ppn->Total, 0, ',', '.') }}</td>
                                     <td>{{ $ppn->Notes }}</td>
                                     <td>
+                                        @php
+                                            $selisihHari = Carbon::now()->diffInDays($ppn->created_at);
+                                        @endphp
                                         <div class="d-flex gap-2">
                                             {{-- <a href="{{ route('page.ppn.edit', $ppn->id) }}"
                                                 class="btn btn-warning btn-sm">Edit</a> --}}
                                             @if ($selisihHari <= 7)
                                                 <a href="{{ route('page.ppn.edit', $ppn->id) }}"
-                                                    class="btn btn-warning btn-sm">Edit</a>
+                                                    class="btn btn-warning btn-sm">
+                                                    Edit
+                                                </a>
                                             @else
-                                                <span class="badge bg-secondary">Edit Expired</span>
+                                                <span class="badge bg-secondary p-2">Edit Expired ({{ $selisihHari }}
+                                                    hari)</span>
                                             @endif
                                             <form class="form-soft-delete"
                                                 action="{{ route('page.ppn.destroy', $ppn->id) }}" method="POST"

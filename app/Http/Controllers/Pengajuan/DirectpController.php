@@ -253,7 +253,7 @@ public function store(Request $request)
      */
     public function show(string $id)
     {
-        //
+     
     }
 
     /**
