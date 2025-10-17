@@ -7,6 +7,7 @@ use App\Models\Indirectp;
 use Illuminate\Http\Request;
 
 use App\Exports\IndirectpExport;
+use App\Imports\IndirectpImport;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
@@ -285,4 +286,17 @@ public function forceDelete($id)
        return Excel::download(new IndirectpExport ($start_date, $end_date), 'indirectp.xlsx');
 
      }
+     public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        try {
+            Excel::import(new IndirectpImport, $request->file('file'));
+            return back()->with('success', '✅ Data berhasil di import!');
+        } catch (\Exception $e) {
+            return back()->with('error', '❌ Terjadi kesalahan saat import. Lihat log untuk detail.');
+        }
+    }
 }

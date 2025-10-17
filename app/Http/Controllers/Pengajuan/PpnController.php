@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Imports\PpnImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PpnController extends Controller
@@ -359,4 +360,31 @@ public function forceDelete($id)
         $directCost->needed_by = null;
     }
 }
+ public function checkItem($item_id)
+{
+    Log::info("Cek item dipanggil untuk:" . $item_id);
+
+    $exists = DB::table('ppns')->where('item_id', $item_id)->exists();
+    Log::info("Item {$item_id} status: " . ($exists ? 'ADA' : 'BELUM ADA'));
+
+    return response()->json(['exists' => $exists]);
+}
+
+public function import(Request $request)
+    {
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls'
+    ]);
+
+    try {
+        // Jalankan import
+        Excel::import(new  PpnImport, $request->file('file'));
+
+        return redirect()->back()->with('success', '✅ Data ppn berhasil di import!');
+    } catch (\Exception $e) {
+        Log::error('❌ Import gagal: ' . $e->getMessage());
+        return redirect()->back()->with('error', '❌ Terjadi kesalahan saat import. Lihat log untuk detail.');
+    }
+
+    }
 }

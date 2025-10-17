@@ -7,6 +7,7 @@ use App\Models\DirectP;
 use App\Models\Workorder;
 use Illuminate\Http\Request;
 use App\Exports\DirectpExport;
+use App\Imports\DirectpImport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -556,11 +557,29 @@ public function forceDelete($id)
     }
    public function checkItem($item_id)
 {
-    Log::info("Cek item dipanggil untuk: " . $item_id);
+    Log::info("Cek item dipanggil untuk:" . $item_id);
 
     $exists = DB::table('direct_p_s')->where('item_id', $item_id)->exists();
     Log::info("Item {$item_id} status: " . ($exists ? 'ADA' : 'BELUM ADA'));
 
     return response()->json(['exists' => $exists]);
 }
+
+    public function import(Request $request)
+    {
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls'
+    ]);
+
+    try {
+        // Jalankan import
+        Excel::import(new  DirectpImport, $request->file('file'));
+
+        return redirect()->back()->with('success', '✅ Data Directcost berhasil di import!');
+    } catch (\Exception $e) {
+        Log::error('❌ Import gagal: ' . $e->getMessage());
+        return redirect()->back()->with('error', '❌ Terjadi kesalahan saat import. Lihat log untuk detail.');
+    }
+
+    }
 }

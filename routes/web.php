@@ -67,6 +67,9 @@ Route::middleware(['guest'])->group(function(){
  Route::post('/directp/restore/{id}', [DirectPController::class, 'restore'])->name('page.Directcost.restore');
  Route::delete('/directp/force-delete/{id}', [DirectPController::class, 'forceDelete'])->name('page.Directcost.forceDelete');
  Route::get('/directp.export', [DirectpController::class, 'export'])->name('directp.export');
+ Route::get('/check-item/{item_id}', [DirectpController::class, 'checkItem'])->name('check.item');
+ Route::get('/directp/import', [DirectpController::class, 'importForm'])->name('directp.import.form');
+ Route::post('/directp/import', [DirectpController::class, 'import'])->name('directp.import');
  
 
 
@@ -92,6 +95,7 @@ Route::middleware(['guest'])->group(function(){
  Route::post('/indirectp/restore/{id}', [IndirectpController::class, 'restore'])->name('page.indirectp.restore');
  Route::delete('/indirectp/force-delete/{id}', [IndirectpController::class, 'forceDelete'])->name('page.indirectp.forceDelete');
  Route::get('/indirectp.export', [IndirectpController::class, 'export'])->name('indirectp.export');
+ Route::post('/indirectp/import', [IndirectpController::class, 'import'])->name('indirectp.import');
 
  Route::get('/ppn',[PpnController::class, 'index'])->name('page.ppn.index');
  Route::get('/ppn/create', [PpnController::class, 'create'])->name('page.ppn.create');
@@ -103,6 +107,8 @@ Route::middleware(['guest'])->group(function(){
  Route::post('/ppn/restore/{id}', [PpnController::class, 'restore'])->name('page.ppn.restore');
  Route::delete('/ppn/force-delete/{id}', [PpnController::class, 'forceDelete'])->name('page.ppn.forceDelete');
  Route::get('/ppn.export', [PpnController::class, 'export'])->name('ppn.export');
+ Route::get('/ppn/import', [PpnController::class, 'importForm'])->name('ppn.import.form');
+ Route::post('/ppn/import', [PpnController::class, 'import'])->name('ppn.import');
 
  Route:: get('/indirecta',[IndirectaController::class, 'index'])->name('page.indirecta.index');
  Route::get('/indirecta/create', [IndirectaController::class, 'create'])->name('page.indirecta.create');

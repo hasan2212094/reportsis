@@ -44,7 +44,7 @@ class DirectpExport implements FromCollection, WithHeadings, WithMapping, WithSt
                 'ITEM',
                 'QTY',
                 'SATUAN',
-                'KEBUTUH',
+                'KEBUTUHAN',
                 'WORKORDER', 
                 'TANGGAL', // Diubah dari 'TANGGAL PENGAJUAN'
                 'TOTAL',

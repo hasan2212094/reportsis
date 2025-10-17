@@ -32,221 +32,245 @@
                     ]) }}"
                         class="btn btn-success rounded-pill">Export Excel</a>
                 </div>
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <form action="{{ route('indirectp.import') }}" method="POST" enctype="multipart/form-data"
+                            class="mt-3">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="file" class="form-label">Pilih File Excel (.xlsx)</label>
+                                <input type="file" name="file" id="file" class="form-control" required>
+                                @error('file')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-primary">Import</button>
+                        </form>
+
+                        <hr>
+                        <p>📄 Contoh format file: <a href="{{ asset('template_ppn_import.xlsx') }}" download>Download
+                                Template</a></p>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        {{-- Tab: Data Aktif / Data Terhapus --}}
-        <ul class="nav nav-tabs mb-3" id="dataTab" role="tablist">
-            <li class="nav-item">
-                <button class="nav-link active" id="aktif-tab" data-bs-toggle="tab" data-bs-target="#aktif"
-                    type="button">Data Aktif</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" id="hapus-tab" data-bs-toggle="tab" data-bs-target="#hapus" type="button">Data
-                    Terhapus</button>
-            </li>
-        </ul>
+            {{-- Tab: Data Aktif / Data Terhapus --}}
+            <ul class="nav nav-tabs mb-3" id="dataTab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" id="aktif-tab" data-bs-toggle="tab" data-bs-target="#aktif"
+                        type="button">Data Aktif</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="hapus-tab" data-bs-toggle="tab" data-bs-target="#hapus" type="button">Data
+                        Terhapus</button>
+                </li>
+            </ul>
 
-        <div class="tab-content">
-            {{-- TAB 1: Data Aktif --}}
-            <div class="tab-pane fade show active" id="aktif" role="tabpanel">
-                <div class="table-responsive text-nowrap">
-                    <table id="example" class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Id_item</th>
-                                <th>Item</th>
-                                <th>Qty</th>
-                                <th>Satuan</th>
-                                <th>Kebutuhan</th>
-                                <th>Tanggal Pengajuan</th>
-                                <th>Total</th>
-                                <th>Note</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($data as $indirectcost)
+            <div class="tab-content">
+                {{-- TAB 1: Data Aktif --}}
+                <div class="tab-pane fade show active" id="aktif" role="tabpanel">
+                    <div class="table-responsive text-nowrap">
+                        <table id="example" class="table table-hover">
+                            <thead>
                                 <tr>
-                                    <td>{{ $indirectcost->item_id }}</td>
-                                    <td>{{ $indirectcost->Item }}</td>
-                                    <td>{{ $indirectcost->Qty }}</td>
-                                    <td>{{ $indirectcost->Unit }}</td>
-                                    <td>{{ $indirectcost->Needed_by }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($indirectcost->Date_pengajuan)->format('d-m-Y') }}</td>
-                                    <td>Rp {{ number_format($indirectcost->Total, 0, ',', '.') }}</td>
-                                    <td>{{ $indirectcost->Notes }}</td>
-                                    <td>
-                                        @php
-                                            $selisihHari = Carbon::now()->diffInDays($indirectcost->created_at);
-                                        @endphp
-                                        <div class="d-flex gap-2">
-                                            {{-- <a href="{{ route('page.indirectp.edit', $indirectcost->id) }}"
-                                                class="btn btn-warning btn-sm">Edit</a> --}}
+                                    <th>Id_item</th>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Satuan</th>
+                                    <th>Kebutuhan</th>
+                                    <th>Tanggal Pengajuan</th>
+                                    <th>Total</th>
+                                    <th>Note</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $indirectcost)
+                                    <tr>
+                                        <td>{{ $indirectcost->item_id }}</td>
+                                        <td>{{ $indirectcost->Item }}</td>
+                                        <td>{{ $indirectcost->Qty }}</td>
+                                        <td>{{ $indirectcost->Unit }}</td>
+                                        <td>{{ $indirectcost->Needed_by }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($indirectcost->Date_pengajuan)->format('d-m-Y') }}
+                                        </td>
+                                        <td>Rp {{ number_format($indirectcost->Total, 0, ',', '.') }}</td>
+                                        <td>{{ $indirectcost->Notes }}</td>
+                                        <td>
+                                            @php
+                                                $selisihHari = Carbon::now()->diffInDays($indirectcost->created_at);
+                                            @endphp
                                             <div class="d-flex gap-2">
-                                                @if ($selisihHari <= 7)
-                                                    <a href="{{ route('page.indirectp.edit', $indirectcost->id) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        Edit
-                                                    </a>
-                                                @else
-                                                    <span class="badge bg-secondary p-2">Edit Expired ({{ $selisihHari }}
-                                                        hari)</span>
-                                                @endif
+                                                {{-- <a href="{{ route('page.indirectp.edit', $indirectcost->id) }}"
+                                                class="btn btn-warning btn-sm">Edit</a> --}}
+                                                <div class="d-flex gap-2">
+                                                    @if ($selisihHari <= 7)
+                                                        <a href="{{ route('page.indirectp.edit', $indirectcost->id) }}"
+                                                            class="btn btn-warning btn-sm">
+                                                            Edit
+                                                        </a>
+                                                    @else
+                                                        <span class="badge bg-secondary p-2">Edit Expired
+                                                            ({{ $selisihHari }}
+                                                            hari)
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                <form class="form-soft-delete"
+                                                    action="{{ route('page.indirectp.destroy', $indirectcost->id) }}"
+                                                    method="POST" data-id="{{ $indirectcost->id }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                </form>
                                             </div>
-                                            <form class="form-soft-delete"
-                                                action="{{ route('page.indirectp.destroy', $indirectcost->id) }}"
-                                                method="POST" data-id="{{ $indirectcost->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
 
-            {{-- TAB 2: Data Terhapus --}}
-            <div class="tab-pane fade" id="hapus" role="tabpanel">
-                <div class="table-responsive text-nowrap">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID Item</th>
-                                <th>Item</th>
-                                <th>Qty</th>
-                                <th>Satuan</th>
-                                <th>Kebutuhan</th>
-                                <th>Tanggal Pengajuan</th>
-                                <th>Total</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($trashed as $indirectcost)
+                {{-- TAB 2: Data Terhapus --}}
+                <div class="tab-pane fade" id="hapus" role="tabpanel">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-hover">
+                            <thead>
                                 <tr>
-                                    <td>{{ $indirectcost->item_id }}</td>
-                                    <td>{{ $indirectcost->Item }}</td>
-                                    <td>{{ $indirectcost->Qty }}</td>
-                                    <td>{{ $indirectcost->Unit }}</td>
-                                    <td>{{ $indirectcost->Needed_by }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($indirectcost->Date_pengajuan)->format('d-m-Y') }}</td>
-                                    <td>Rp {{ number_format($indirectcost->Total, 0, ',', '.') }}</td>
-                                    <td>
-                                        <div class="d-flex gap-2">
-                                            <form class="form-restore"
-                                                action="{{ route('page.indirectp.restore', $indirectcost->id) }}"
-                                                method="POST" data-id="{{ $indirectcost->id }}">
-                                                @csrf
-                                                <button class="btn btn-success btn-sm">Restore</button>
-                                            </form>
+                                    <th>ID Item</th>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Satuan</th>
+                                    <th>Kebutuhan</th>
+                                    <th>Tanggal Pengajuan</th>
+                                    <th>Total</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($trashed as $indirectcost)
+                                    <tr>
+                                        <td>{{ $indirectcost->item_id }}</td>
+                                        <td>{{ $indirectcost->Item }}</td>
+                                        <td>{{ $indirectcost->Qty }}</td>
+                                        <td>{{ $indirectcost->Unit }}</td>
+                                        <td>{{ $indirectcost->Needed_by }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($indirectcost->Date_pengajuan)->format('d-m-Y') }}
+                                        </td>
+                                        <td>Rp {{ number_format($indirectcost->Total, 0, ',', '.') }}</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <form class="form-restore"
+                                                    action="{{ route('page.indirectp.restore', $indirectcost->id) }}"
+                                                    method="POST" data-id="{{ $indirectcost->id }}">
+                                                    @csrf
+                                                    <button class="btn btn-success btn-sm">Restore</button>
+                                                </form>
 
-                                            <form class="form-force-delete"
-                                                action="{{ route('page.indirectp.forceDelete', $indirectcost->id) }}"
-                                                method="POST" data-id="{{ $indirectcost->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Hapus Permanen</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="text-center">Tidak ada data terhapus</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                                <form class="form-force-delete"
+                                                    action="{{ route('page.indirectp.forceDelete', $indirectcost->id) }}"
+                                                    method="POST" data-id="{{ $indirectcost->id }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus
+                                                        Permanen</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center">Tidak ada data terhapus</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-@endsection
-@push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('#example').DataTable();
+    @endsection
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                $('#example').DataTable();
 
-            // === Soft Delete ===
-            $(document).on('submit', '.form-soft-delete', function(e) {
-                e.preventDefault();
-                if (!confirm('Yakin mau hapus data ini (soft delete)?')) return;
+                // === Soft Delete ===
+                $(document).on('submit', '.form-soft-delete', function(e) {
+                    e.preventDefault();
+                    if (!confirm('Yakin mau hapus data ini (soft delete)?')) return;
 
-                let form = $(this);
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'DELETE',
-                    data: form.serialize(),
-                    success: function(res) {
-                        if (res.status === 'success') {
-                            alert(res.message);
-                            location.reload(); // ✅ auto refresh
-                        } else {
-                            alert('Gagal hapus data.');
+                    let form = $(this);
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: 'DELETE',
+                        data: form.serialize(),
+                        success: function(res) {
+                            if (res.status === 'success') {
+                                alert(res.message);
+                                location.reload(); // ✅ auto refresh
+                            } else {
+                                alert('Gagal hapus data.');
+                            }
+                        },
+                        error: function() {
+                            alert('Terjadi kesalahan.');
                         }
-                    },
-                    error: function() {
-                        alert('Terjadi kesalahan.');
-                    }
+                    });
+                });
+
+                // === Restore ===
+                $(document).on('submit', '.form-restore', function(e) {
+                    e.preventDefault();
+                    let form = $(this);
+
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: 'POST',
+                        data: form.serialize(),
+                        success: function(res) {
+                            if (res.status === 'success') {
+                                alert(res.message);
+                                location.reload(); // ✅ auto refresh
+                            } else {
+                                alert('Gagal restore data.');
+                            }
+                        },
+                        error: function() {
+                            alert('Terjadi kesalahan saat restore.');
+                        }
+                    });
+                });
+
+                // === Force Delete ===
+                $(document).on('submit', '.form-force-delete', function(e) {
+                    e.preventDefault();
+                    if (!confirm('Yakin hapus permanen data ini?')) return;
+
+                    let form = $(this);
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: 'DELETE',
+                        data: form.serialize(),
+                        success: function(res) {
+                            if (res.status === 'success') {
+                                alert(res.message);
+                                location.reload(); // ✅ auto refresh
+                            } else {
+                                alert('Gagal hapus permanen.');
+                            }
+                        },
+                        error: function() {
+                            alert('Terjadi kesalahan saat hapus permanen.');
+                        }
+                    });
                 });
             });
+        </script>
+    @endpush
 
-            // === Restore ===
-            $(document).on('submit', '.form-restore', function(e) {
-                e.preventDefault();
-                let form = $(this);
-
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'POST',
-                    data: form.serialize(),
-                    success: function(res) {
-                        if (res.status === 'success') {
-                            alert(res.message);
-                            location.reload(); // ✅ auto refresh
-                        } else {
-                            alert('Gagal restore data.');
-                        }
-                    },
-                    error: function() {
-                        alert('Terjadi kesalahan saat restore.');
-                    }
-                });
-            });
-
-            // === Force Delete ===
-            $(document).on('submit', '.form-force-delete', function(e) {
-                e.preventDefault();
-                if (!confirm('Yakin hapus permanen data ini?')) return;
-
-                let form = $(this);
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'DELETE',
-                    data: form.serialize(),
-                    success: function(res) {
-                        if (res.status === 'success') {
-                            alert(res.message);
-                            location.reload(); // ✅ auto refresh
-                        } else {
-                            alert('Gagal hapus permanen.');
-                        }
-                    },
-                    error: function() {
-                        alert('Terjadi kesalahan saat hapus permanen.');
-                    }
-                });
-            });
-        });
-    </script>
-@endpush
-
-{{-- @push('scripts')
+    {{-- @push('scripts')
     <script>
         $(document).ready(function() {
             const tableAktif = $('#example').DataTable();
