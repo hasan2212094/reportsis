@@ -138,7 +138,7 @@
         </li>
 
         {{-- Menu hanya untuk ADMIN --}}
-        @if (Auth::user()->role === 'admin')
+        @if (Auth::check() && Auth::user()->role === 'admin')
             <li class="menu-item">
                 <a href="javascript:void(0)" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-user"></i>

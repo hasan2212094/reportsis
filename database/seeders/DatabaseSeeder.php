@@ -19,19 +19,16 @@ class DatabaseSeeder extends Seeder
             'name' => 'lingga',
             'email' => 'lingga@gmail.com',
             'password' => Hash::make('12345678'),
-            'is_admin' => true
+            'is_admin' => true,
+            'role' => 'admin'
         ],[
             'name' => 'hasan',
             'email' => 'hasan@gmail.com',
             'password' => Hash::make('12345678'),
-            'is_admin' => true
+            'is_admin' => false,
+            'role' => 'admin'
 
-        ],[
-            'name' => 'idris',
-            'email' => 'idris@gmail.com',
-            'password' => Hash::make('12345678'),
-            'is_admin' => false
-        ]
+        ],
            
         ]);
         // \App\Models\User::factory()->create([

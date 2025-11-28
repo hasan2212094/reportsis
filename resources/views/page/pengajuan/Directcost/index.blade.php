@@ -115,7 +115,7 @@
                                     @endif
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($directcost->Date_pengajuan)->format('d-m-Y') }}</td>
-                                <td>Rp {{ number_format($directcost->Total, 0, ',', '.') }}</td>
+                                <td> Rp {{ number_format((float) $directcost->Total, 0, ',', '.') }}</td>
                                 <td>{{ $directcost->Notes }}</td>
                                 <td>
                                     @php

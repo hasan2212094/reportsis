@@ -177,7 +177,7 @@
                                             <span class="badge bg-secondary">Lainnya</span>
                                         @endif
                                     </td>
-                                    <td>Rp {{ number_format($ppna->Total, 0, ',', '.') }}</td>
+                                    <td> Rp {{ number_format((float) $directcost->Total, 0, ',', '.') }}</td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
                                             @php
