@@ -94,7 +94,7 @@
                                         <td>{{ $indirectcost->Needed_by }}</td>
                                         <td>{{ \Carbon\Carbon::parse($indirectcost->Date_pengajuan)->format('d-m-Y') }}
                                         </td>
-                                        <td> Rp {{ number_format((float) $directcost->Total, 0, ',', '.') }}</td>
+                                        <td> Rp {{ number_format((float) $indirectcost->Total, 0, ',', '.') }}</td>
                                         <td>{{ $indirectcost->Notes }}</td>
                                         <td>
                                             @php

@@ -168,7 +168,7 @@
                                             @endif
                                         </td>
                                         <td>{{ \Carbon\Carbon::parse($ppn->Date_pengajuan)->format('d-m-Y') }}</td>
-                                        <td>Rp {{ number_format($ppn->Total, 0, ',', '.') }}</td>
+                                        <td>Rp {{ number_format((float) $ppn->Total, 0, ',', '.') }}</td>
                                         <td>
                                             <div class="d-flex gap-2">
                                                 <form class="form-restore"
