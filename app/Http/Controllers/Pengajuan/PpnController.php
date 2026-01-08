@@ -146,21 +146,21 @@ class PpnController extends Controller
 
     Log::info('✅ Validation passed', $validated);
 
-    $directCost = new Ppn();
-    $directCost->item_id = $validated['item_id'];
-    $directCost->Item = $validated['Item'];
-    $directCost->Qty = $validated['Qty'];
-    $directCost->Unit = $validated['Unit'];
-    $directCost->Date_pengajuan = $validated['Date_pengajuan'];
-    $directCost->Total = $validated['Total'];
-    $directCost->Notes = $validated['Notes'] ?? null;
+    $ppn = new Ppn();
+    $ppn->item_id = $validated['item_id'];
+    $ppn->Item = $validated['Item'];
+    $ppn->Qty = $validated['Qty'];
+    $ppn->Unit = $validated['Unit'];
+    $ppn->Date_pengajuan = $validated['Date_pengajuan'];
+    $ppn->Total = $validated['Total'];
+    $ppn->Notes = $validated['Notes'] ?? null;
 
     // tentukan kebutuhan manual atau WO
-    $this->assignWorkorderOrManual($directCost, $request);
+    $this->assignWorkorderOrManual($ppn, $request);
 
-    $directCost->save();
+    $ppn->save();
 
-    Log::info('💾 DirectP saved successfully', ['id' => $directCost->id]);
+    Log::info('💾 ppn saved successfully', ['id' => $ppn->id]);
 
     return redirect()->route('page.ppn.index')->with('success', 'Data Direct Cost berhasil ditambahkan.');
 } catch (\Throwable $e) {

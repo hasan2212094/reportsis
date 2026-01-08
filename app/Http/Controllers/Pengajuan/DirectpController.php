@@ -18,11 +18,13 @@ class DirectpController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    { 
-        $query = DirectP::with('workorder'); // << ini penting
+ public function index(Request $request)
+{
+    $query = DirectP::with('workorder')
+        ->orderBy('Date_pengajuan', 'asc')
+        ->orderBy('id', 'asc');
 
-    if ($request->start_date && $request->end_date) {
+    if ($request->filled('start_date') && $request->filled('end_date')) {
         $query->whereBetween('Date_pengajuan', [
             $request->start_date,
             $request->end_date
@@ -30,10 +32,17 @@ class DirectpController extends Controller
     }
 
     $data = $query->get();
-    $trashed = DirectP::onlyTrashed()->get();
+
+    $trashed = DirectP::onlyTrashed()
+        ->orderBy('Date_pengajuan', 'asc')
+        ->orderBy('id', 'asc')
+        ->get();
 
     return view('page.pengajuan.Directcost.index', compact('data', 'trashed'));
 }
+
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -143,110 +152,116 @@ class DirectpController extends Controller
 // }
 public function store(Request $request)
 {
-    // Bersihkan format angka
-    $request->merge([
-        'Total' => preg_replace('/[^0-9]/', '', $request->Total)
-    ]);
+    try {
+        Log::info('🔹 DirectP store() called', $request->all());
 
-    // Ambil item_id dari user
-    $itemId = $request->item_id;
+        // ---------------------------
+        // 1️⃣ BERSIHKAN FORMAT ANGKA
+        // ---------------------------
+        $request->merge([
+            'Total' => preg_replace('/[^0-9]/', '', $request->Total)
+        ]);
 
-    // Jika user tidak pilih (kosong), baru generate otomatis
-    if (empty($itemId)) {
-        $lastItem = DB::table('direct_p_s')
-            ->where('item_id', 'like', 'ITEM%')
-            ->orderBy('id', 'desc')
-            ->first();
+        // ---------------------------
+        // 2️⃣ GENERATE ITEM ID (JIKA KOSONG)
+        // ---------------------------
+        $itemId = $request->item_id;
 
-        if ($lastItem && preg_match('/ITEM(\d+)/', $lastItem->item_id, $matches)) {
-            $nextNumber = (int)$matches[1] + 1;
-        } else {
-            $nextNumber = 1;
+        if (empty($itemId)) {
+            $lastItem = DB::table('direct_p_s')
+                ->where('item_id', 'like', 'ITEM%')
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if ($lastItem && preg_match('/ITEM(\d+)/', $lastItem->item_id, $matches)) {
+                $nextNumber = (int)$matches[1] + 1;
+            } else {
+                $nextNumber = 1;
+            }
+
+            $itemId = 'ITEM' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            $request->merge(['item_id' => $itemId]);
         }
 
-        $itemId = 'ITEM' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        // ---------------------------
+        // 3️⃣ VALIDASI
+        // ---------------------------
+        $validated = $request->validate([
+            'item_id'           => 'required|string|max:100|unique:direct_p_s,item_id',
+            'Item'              => 'required|string',
+            'Qty'               => 'required|numeric|min:1',
+            'Unit'              => 'required|string|max:255',
+            'needed_by'         => 'nullable|string',          // "manual" atau kode_wo
+            'needed_by_input'   => 'nullable|string|max:255',  // input manual user
+            'Date_pengajuan'    => 'required|date',
+            'Total'             => 'required|numeric|min:0',
+            'Notes'             => 'nullable|string|max:500',
+        ]);
+
+        Log::info('✅ Validation passed', $validated);
+
+        // ---------------------------
+        // 4️⃣ SIMPAN DATA DASAR
+        // ---------------------------
+        $directCost = new DirectP();
+        $directCost->item_id        = $validated['item_id'];
+        $directCost->Item           = $validated['Item'];
+        $directCost->Qty            = $validated['Qty'];
+        $directCost->Unit           = $validated['Unit'];
+        $directCost->Date_pengajuan = $validated['Date_pengajuan'];
+        $directCost->Total          = $validated['Total'];
+        $directCost->Notes          = $validated['Notes'] ?? null;
+
+        // ---------------------------
+        // 5️⃣ LOGIKA MANUAL / WORKORDER
+        // ---------------------------
+        $needed = $request->needed_by;
+        $manualValue = $request->needed_by_input;
+
+        if ($needed === 'manual') {
+            // input manual
+            $directCost->Needed_by = $manualValue;
+            $directCost->workorder_id = null;
+
+        } elseif (!empty($needed)) {
+            // input kode WO seperti WO20250100
+            $workorder = Workorder::where('kode_wo', $needed)->first();
+
+            if ($workorder) {
+                $directCost->workorder_id = $workorder->id;
+                $directCost->Needed_by = null;
+            } else {
+                // WO tidak ditemukan → fallback manual
+                $directCost->workorder_id = null;
+                $directCost->Needed_by = $needed;
+            }
+
+        } else {
+            // kosong
+            $directCost->Needed_by = null;
+            $directCost->workorder_id = null;
+        }
+
+        // ---------------------------
+        // 6️⃣ SIMPAN
+        // ---------------------------
+        $directCost->save();
+
+        Log::info('💾 DirectP saved successfully', ['id' => $directCost->id]);
+
+        return redirect()
+            ->route('page.pengajuan.Directcost.index')
+            ->with('success', 'Data Direct Cost berhasil ditambahkan.');
+
+    } catch (\Throwable $e) {
+        Log::error('❌ Error in DirectP store()', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()])
+                     ->withInput();
     }
-
-    // ✅ Cek apakah item_id sudah ada
-    $exists = DB::table('direct_p_s')->where('item_id', $itemId)->exists();
-    if ($exists) {
-        return back()
-            ->withErrors(['item_id' => 'ITEM ID ' . $itemId . ' sudah ada di database.'])
-            ->withInput();
-    }
-
-   // Validasi input lain
-    // $validated = $request->validate([
-    //     'Item'           => 'required|string|max:255',
-    //     'Qty'            => 'required|integer|min:1',
-    //     'Unit'           => 'required|string|max:50',
-    //     'Needed_by'      => 'required|string|max:255',
-    //     'Date_pengajuan' => 'required|date',
-    //     'Total'          => 'required|numeric|min:0',
-    // ],[
-    //     'Item.required'           => 'Nama item wajib diisi.',
-    //     'Qty.required'            => 'Jumlah Qty wajib diisi.',
-    //     'Unit.required'           => 'Satuan wajib diisi.',
-    //     'Needed_by.required'      => 'Kebutuhan wajib diisi.',
-    //     'Date_pengajuan.required' => 'Tanggal pengajuan wajib diisi.',
-    //     'Total.required'          => 'Total wajib diisi.',
-    // ]);
-
-    // // Simpan data
-    // $validated = $request->validate([
-    //     'Item_id' => 'required|string|max:255',
-    //     'Workorder_id' => 'required|string|max:255',
-    //     'Qty' => 'required|numeric|min:1',
-    //     'Unit' => 'required|string|min:0',
-    //     'Needed_by' => 'nullable|string',
-    //     'needed_by_input' => 'nullable|string|max:255',
-    //     'Date_pengajuan' => 'required|date',
-    //     'Total' => 'required|numeric|min:0',
-    //     'Notes' => 'nullable|string|max:500',
-    // ]);
-
-     Log::info('🔹 DirectP store called', $request->all()); // log semua input request
-
-    try {
-    $validated = $request->validate([
-        'item_id' => 'required|string|max:100|unique:direct_p_s,item_id',
-        'Item' => 'required|string|max:255',
-        'Qty' => 'required|numeric|min:1',
-        'Unit' => 'required|string|max:255',
-        'needed_by' => 'nullable|string|max:255',
-        'needed_by_input' => 'nullable|string|max:255',
-        'Date_pengajuan' => 'required|date',
-        'Total' => 'required|numeric|min:0',
-        'Notes' => 'nullable|string|max:500',
-    ]);
-
-    Log::info('✅ Validation passed', $validated);
-
-    $directCost = new DirectP();
-    $directCost->item_id = $validated['item_id'];
-    $directCost->Item = $validated['Item'];
-    $directCost->Qty = $validated['Qty'];
-    $directCost->Unit = $validated['Unit'];
-    $directCost->Date_pengajuan = $validated['Date_pengajuan'];
-    $directCost->Total = $validated['Total'];
-    $directCost->Notes = $validated['Notes'] ?? null;
-
-    // tentukan kebutuhan manual atau WO
-    $this->assignWorkorderOrManual($directCost, $request);
-
-    $directCost->save();
-
-    Log::info('💾 DirectP saved successfully', ['id' => $directCost->id]);
-
-    return redirect()->route('page.pengajuan.Directcost.index')->with('success', 'Data Direct Cost berhasil ditambahkan.');
-} catch (\Throwable $e) {
-    Log::error('❌ Error in DirectP store', [
-        'message' => $e->getMessage(),
-        'trace' => $e->getTraceAsString(),
-    ]);
-
-    return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
-}
 }
 
     /**

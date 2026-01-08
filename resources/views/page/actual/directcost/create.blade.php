@@ -31,10 +31,9 @@
                             <label for="direct_p_s_id" class="form-label small text-secondary">ITEM ID</label>
                             <select name="direct_p_s_id" id="direct_p_s_id"
                                 class="form-control form-control-sm shadow-sm rounded-3">
-                                <option value="">-- Select --</option>
+                                <option value="" hidden>-- Select --</option>
                                 @foreach ($direct_p_s as $item)
-                                    <option value="" hidden>-- Select --</option>
-                                    <option value="{{ $item->id }}">{{ $item->item_id }}-{{ $item->Item }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->item_id }} - {{ $item->Item }}</option>
                                 @endforeach
                             </select>
                         </div>

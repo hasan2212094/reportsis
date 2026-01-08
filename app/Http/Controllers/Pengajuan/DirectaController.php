@@ -40,7 +40,7 @@ class DirectaController extends Controller
      */
     public function create()
     {
-       $direct_p_s = DirectP::all(); // ambil semua data dari tabel direct_p_s
+       $direct_p_s = DirectP::orderBy('item_id', 'ASC')->get(); // ambil semua data dari tabel direct_p_s
        return view('page.actual.directcost.create', compact('direct_p_s'));
     }
 
