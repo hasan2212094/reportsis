@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ProjectManager extends Model
+{
+    use HasFactory;
+     protected $table = 'presetasis';
+     protected $fillable = [
+            'workorder_id',
+            'workarea',
+            'project',
+            'pt_id',
+            'user_pm',
+            'qty',
+            'target_date',
+            'actualfinish_date',
+            'status_pekerjaan',
+            'persentase',
+            'keterangan',
+            'task_name',
+            'pic',
+            'activity_detail',
+            'bl_start',
+            'bl_finish',
+            'actual_start',
+            'duration',
+            'unit'
+          ];
+          public function workorder()
+          {
+              return $this->belongsTo(Workorder::class);
+          }
+          public function imagesPM()
+          {
+              return $this->hasMany(ImagesPM::class);
+          }
+
+
+}

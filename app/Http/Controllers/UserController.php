@@ -9,5 +9,6 @@ class UserController extends Controller
 {
     public function index(){
 
-        return view('user.index');
+         $user = User::with('role')->get();
+         return view('table.index', compact('user'));
     }}

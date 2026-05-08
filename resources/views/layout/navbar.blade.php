@@ -62,7 +62,7 @@
                                         {{ $user?->name ?? 'Guest' }}
                                     </span>
                                     <small class="text-muted">
-                                        {{ ucfirst($user?->role ?? 'Guest') }}
+                                        {{ ucfirst(optional($user->role)->name ?? 'Guest') }}
                                     </small>
                                 </div>
                             </div>

@@ -3,62 +3,68 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class TableController extends Controller
 {
     public function index(){
-        $user = User::all();
+        $user = User::with('role')->get();
+        return view('table.index', compact('user'));
+    }
 
-        return view('table.index',compact('user'));
-    }
     public function create(){
-        return view('table.create');
+        $roles = Role::all();
+        return view('table.create', compact('roles'));
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:users,email',
             'password'  => 'required|string|min:6|confirmed',
-            'role'      => 'required|in:admin,user',
-            'bagian'    => 'nullable|required_if:role,user|string|max:255',
+            'role_id'   => 'required|exists:roles,id',
         ]);
 
         User::create([
             'name'      => $request->name,
             'email'     => $request->email,
             'password'  => Hash::make($request->password),
-            'role'      => $request->role,
-            'bagian'    => $request->role === 'user' ? $request->bagian : null,
+            'role_id'   => $request->role_id,
         ]);
 
-        return redirect()->route('table.index')->with('success', 'User berhasil ditambahkan!');
+        return redirect()->route('table.index')
+        ->with('success', 'User berhasil ditambahkan!');
     }
+
     public function edit(User $user){
-        return view('table.edit',compact('user'));
+        $roles = Role::all();
+        return view('table.edit', compact('user','roles'));
     }
+
     public function update(Request $request, User $user){
+
         $request->validate([
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:users,email,'.$user->id,
-            'role'      => 'required|in:admin,user',
-            'bagian'    => 'nullable|required_if:role,user|string|max:255',
+            'role_id'   => 'required|exists:roles,id',
         ]);
 
         $user->update([
             'name'      => $request->name,
             'email'     => $request->email,
-            'role'      => $request->role,
-            'bagian'    => $request->role === 'user' ? $request->bagian : null,
+            'role_id'   => $request->role_id,
         ]);
 
-        return redirect()->route('table.index')->with('success', 'User berhasil diupdate!');
+        return redirect()->route('table.index')
+        ->with('success', 'User berhasil diupdate!');
     }
+
     public function destroy(User $user){
         $user->delete();
-        return redirect()->route('table.index')->with('success', 'User berhasil dihapus!');
+        return redirect()->route('table.index')
+        ->with('success', 'User berhasil dihapus!');
     }
 }

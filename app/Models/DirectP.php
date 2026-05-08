@@ -42,4 +42,9 @@ class DirectP extends Model
     {
         return $this->belongsTo(Workorder::class, 'workorder_id', 'id');
     }
+
+    public function rabs()
+    {
+        return $this->hasMany(Directa::class, 'direct_p_s_id', 'id');
+    }
 }

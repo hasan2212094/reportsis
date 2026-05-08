@@ -48,6 +48,28 @@
     </div>
 
     @include('layout.script')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const activeMenu = document.querySelectorAll(".menu-item.active > .menu-link");
+
+            activeMenu.forEach(link => {
+                link.style.background = "#eef2ff";
+                link.style.borderLeft = "4px solid #696cff";
+                link.style.borderRadius = "8px";
+                link.style.boxShadow = "0 4px 10px rgba(105,108,255,0.08)";
+                link.style.fontWeight = "600";
+                link.style.transition = "all 0.3s ease";
+
+                const icon = link.querySelector("i");
+                if (icon) {
+                    icon.style.color = "#696cff";
+                }
+            });
+
+        });
+    </script>
+
 </body>
 
 </html>

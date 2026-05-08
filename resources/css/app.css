@@ -1,0 +1,87 @@
+/* Freeze column aksi di kanan */
+.rab-table-wrapper .sticky-actions {
+    position: sticky;
+    right: 0;
+    background-color: #fff;
+    z-index: 10;
+    min-width: 120px; /* sesuaikan dengan tombol */
+}
+
+/* Tambahkan bayangan biar terlihat */
+.rab-table-wrapper .sticky-actions::after {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    box-shadow: inset -5px 0 5px -5px rgba(0,0,0,0.2);
+}
+
+/* Scroll horizontal dengan mouse wheel */
+.rab-table-wrapper {
+    overflow-x: auto;
+}
+
+/* Optional: ubah scrollbar biar lebih nyaman */
+.rab-table-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.rab-table-wrapper::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 4px;
+}
+
+/* FIX SCROLL HORIZONTAL SUMMARY */
+.layout-wrapper,
+.layout-container,
+.layout-page,
+.content-wrapper {
+    overflow-x: visible !important;
+}
+
+.summary-table-wrapper {
+    overflow-x: auto !important;
+    display: block;
+    width: 100%;
+}
+
+.summary-table-wrapper table {
+    min-width: 2000px;
+}
+
+.rab-scroll-wrapper {
+    overflow-x: auto !important;
+    display: block;
+    width: 100%;
+}
+
+.rab-scroll-wrapper table {
+    min-width: 1300px; /* paksa scroll muncul */
+}
+
+.wo-scroll-wrapper {
+    overflow-x: auto !important;
+    display: block;
+    width: 100%;
+}
+
+.wo-scroll-wrapper table {
+    min-width: 1600px; /* paksa scroll muncul */
+}
+
+/* Biar teks tidak turun baris */
+.nowrap-col {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+}
+
+td.nowrap-col,
+th.nowrap-col {
+    min-width: 150px;
+}
+
+
+
+

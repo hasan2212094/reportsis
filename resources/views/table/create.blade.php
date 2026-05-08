@@ -87,32 +87,14 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Role</label>
-                            <select class="form-control" id="role" name="role" required>
-                                <option value="">-- Pilih Role --</option>
-                                <option value="admin">Admin</option>
-                                <option value="user">User</option>
-                            </select>
-                            @error('role')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3" id="bagian-field" style="display:none;">
-                            <label class="form-label">Bagian</label>
-                            <select class="form-control" name="bagian">
-                                <option value="">-- Pilih Bagian --</option>
-                                <option value="ppic">PPIC</option>
-                                <option value="produksi">Produksi</option>
-                                <option value="gudang">Gudang</option>
-                                <option value="qc">Quality Control</option>
-                                <option value="keuangan">Finance & Accounting</option>
-                            </select>
-                            @error('bagian')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
+                        <select name="role_id" class="form-control">
+                            <option>-- Select Role --</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}">
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </select>
 
                         <div class="mb-3 form-password-toggle">
                             <label class="form-label">Password</label>
@@ -166,13 +148,6 @@
     <script src="{{ asset('sneat') }}/assets/vendor/js/menu.js"></script>
     <script src="{{ asset('sneat') }}/assets/js/main.js"></script>
 
-    <!-- Toggle Bagian -->
-    <script>
-        document.getElementById("role").addEventListener("change", function() {
-            let bagianField = document.getElementById("bagian-field");
-            bagianField.style.display = (this.value === "user") ? "block" : "none";
-        });
-    </script>
 </body>
 
 </html>

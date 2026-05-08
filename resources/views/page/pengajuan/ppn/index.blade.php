@@ -1,130 +1,120 @@
 @php
     use Carbon\Carbon;
 @endphp
+
 @extends('kerangka.master')
 @section('title', 'PPN Pengajuan')
+
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
+
         <h4 class="fw-bold py-3 mb-4">
             <span class="text-muted fw-light">Tables /</span> PPN Pengajuan
         </h4>
 
         @include('components.alert')
 
-        {{-- Tombol Aksi dan Filter --}}
+        {{-- FILTER + ACTION --}}
         <div class="card p-3 mb-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <form method="GET" action="{{ route('page.ppn.index') }}" class="d-flex gap-2 align-items-center mb-0">
-                    <label for="start_date" class="mb-0">Periode:</label>
-                    <input type="date" name="start_date" id="start_date" class="form-control form-control-sm"
+            <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
+
+                <form method="GET" action="{{ route('page.ppn.index') }}" class="d-flex flex-wrap gap-2 align-items-center">
+                    <label class="mb-0">Periode</label>
+                    <input type="date" name="start_date" class="form-control form-control-sm"
                         value="{{ request('start_date') }}">
-                    <input type="date" name="end_date" id="end_date" class="form-control form-control-sm"
+                    <input type="date" name="end_date" class="form-control form-control-sm"
                         value="{{ request('end_date') }}">
-                    <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                    <button class="btn btn-sm btn-primary">Filter</button>
                     <a href="{{ route('page.ppn.index') }}" class="btn btn-sm btn-secondary">Reset</a>
                 </form>
 
                 <div class="d-flex gap-2">
-                    <a href="{{ route('page.ppn.create') }}" class="btn btn-primary rounded-pill">Tambah data</a>
-                    <a href="{{ route('ppn.export', [
-                        'start_date' => request('start_date'),
-                        'end_date' => request('end_date'),
-                    ]) }}"
-                        class="btn btn-success rounded-pill">Export Excel</a>
-                </div>
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <form action="{{ route('ppn.import') }}" method="POST" enctype="multipart/form-data"
-                            class="mt-3">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="file" class="form-label">Pilih File Excel (.xlsx)</label>
-                                <input type="file" name="file" id="file" class="form-control" required>
-                                @error('file')
-                                    <div class="text-danger mt-1">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <button type="submit" class="btn btn-primary">Import</button>
-                        </form>
-
-                        <hr>
-                        <p>📄 Contoh format file: <a href="{{ asset('template_ppn_import.xlsx') }}" download>Download
-                                Template</a></p>
-                    </div>
+                    <a href="{{ route('page.ppn.create') }}" class="btn btn-primary rounded-pill">Tambah</a>
+                    <a href="{{ route('ppn.export', request()->all()) }}" class="btn btn-success rounded-pill">Export</a>
                 </div>
             </div>
 
-            {{-- Tab: Data Aktif / Data Terhapus --}}
-            <ul class="nav nav-tabs mb-3" id="dataTab" role="tablist">
-                <li class="nav-item">
-                    <button class="nav-link active" id="aktif-tab" data-bs-toggle="tab" data-bs-target="#aktif"
-                        type="button">Data Aktif</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="hapus-tab" data-bs-toggle="tab" data-bs-target="#hapus" type="button">Data
-                        Terhapus</button>
-                </li>
-            </ul>
+            {{-- ================= IMPORT ================= --}}
+            <hr>
+            <form action="{{ route('ppn.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-6">
+                        <input type="file" name="file" class="form-control" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100">Import</button>
+                    </div>
+                    <div class="col-md-4">
+                        <small>
+                            📄 <a href="{{ asset('template_ppn_import.xlsx') }}">Download Template</a>
+                        </small>
+                    </div>
+                </div>
+            </form>
+        </div>
 
-            <div class="tab-content">
-                {{-- TAB 1: Data Aktif --}}
-                <div class="tab-pane fade show active" id="aktif" role="tabpanel">
-                    <div class="table-responsive text-nowrap">
-                        <table id="example" class="table table-hover">
-                            <thead>
+        {{-- TAB --}}
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#aktif">
+                    Data Aktif
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#hapus">
+                    Data Terhapus
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+
+            {{-- ================= DATA AKTIF ================= --}}
+            <div class="tab-pane fade show active" id="aktif">
+
+                {{-- ===== DESKTOP & TABLET ===== --}}
+                <div class="d-none d-md-block">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
                                 <tr>
-                                    <th>Id_item</th>
-                                    <th>Item</th>
-                                    <th>Qty</th>
-                                    <th>Satuan</th>
-                                    <th>Kebutuhan</th>
-                                    <th>Tanggal Pengajuan</th>
+                                    <th>ID</th>
+                                    <th>No Faktur</th>
+                                    <th>Vendor</th>
+                                    <th>Tanggal</th>
+                                    <th>DPP</th>
+                                    <th>PPN</th>
                                     <th>Total</th>
                                     <th>Note</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($data as $ppn)
+                                @foreach ($data as $d)
+                                    @php $selisih = Carbon::now()->diffInDays($d->created_at); @endphp
                                     <tr>
-                                        <td>{{ $ppn->item_id }}</td>
-                                        <td>{{ $ppn->Item }}</td>
-                                        <td>{{ $ppn->Qty }}</td>
-                                        <td>{{ $ppn->Unit }}</td>
-                                        <td>
-                                            @if ($ppn->Needed_by)
-                                                {{ $ppn->Needed_by }}
-                                            @elseif ($ppn->workorder)
-                                                {{ $ppn->workorder->kode_wo }}
-                                            @else
-                                                -
-                                            @endif
+                                        <td>{{ $d->kode_ppn }}</td>
+                                        <td class="fw-semibold">{{ $d->no_faktur }}</td>
+                                        <td>{{ $d->vendor }}</td>
+                                        <td>{{ Carbon::parse($d->tanggal)->format('d-m-Y') }}</td>
+                                        <td>Rp {{ number_format($d->dpp, 0, ',', '.') }}</td>
+                                        <td>Rp {{ number_format($d->ppn, 0, ',', '.') }}</td>
+                                        <td class="fw-bold text-success">
+                                            Rp {{ number_format($d->total, 0, ',', '.') }}
                                         </td>
-                                        <td>{{ \Carbon\Carbon::parse($ppn->Date_pengajuan)->format('d-m-Y') }}</td>
-                                        <td> Rp {{ number_format((float) $ppn->Total, 0, ',', '.') }}</td>
-                                        <td>{{ $ppn->Notes }}</td>
+                                        <td>{{ $d->note }}</td>
                                         <td>
-                                            @php
-                                                $selisihHari = Carbon::now()->diffInDays($ppn->created_at);
-                                            @endphp
                                             <div class="d-flex gap-2">
-                                                {{-- <a href="{{ route('page.ppn.edit', $ppn->id) }}"
-                                                class="btn btn-warning btn-sm">Edit</a> --}}
-                                                @if ($selisihHari <= 7)
-                                                    <a href="{{ route('page.ppn.edit', $ppn->id) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        Edit
-                                                    </a>
+                                                @if ($selisih <= 7)
+                                                    <a href="{{ route('page.ppn.edit', $d->id) }}"
+                                                        class="btn btn-warning btn-sm">Edit</a>
                                                 @else
-                                                    <span class="badge bg-secondary p-2">Edit Expired ({{ $selisihHari }}
-                                                        hari)</span>
+                                                    <span class="badge bg-secondary">Expired</span>
                                                 @endif
-                                                <form class="form-soft-delete"
-                                                    action="{{ route('page.ppn.destroy', $ppn->id) }}" method="POST"
-                                                    data-id="{{ $ppn->id }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                <form action="{{ route('page.ppn.destroy', $d->id) }}" method="POST">
+                                                    @csrf @method('DELETE')
+                                                    <button class="btn btn-danger btn-sm">Hapus</button>
                                                 </form>
                                             </div>
                                         </td>
@@ -135,148 +125,102 @@
                     </div>
                 </div>
 
-                {{-- TAB 2: Data Terhapus --}}
-                <div class="tab-pane fade" id="hapus" role="tabpanel">
-                    <div class="table-responsive text-nowrap">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>ID Item</th>
-                                    <th>Item</th>
-                                    <th>Qty</th>
-                                    <th>Satuan</th>
-                                    <th>Kebutuhan</th>
-                                    <th>Tanggal Pengajuan</th>
-                                    <th>Total</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-trashed">
-                                @forelse ($trashed as $ppn)
-                                    <tr>
-                                        <td>{{ $ppn->item_id }}</td>
-                                        <td>{{ $ppn->Item }}</td>
-                                        <td>{{ $ppn->Qty }}</td>
-                                        <td>{{ $ppn->Unit }}</td>
-                                        <td>
-                                            @if ($ppn->Needed_by)
-                                                {{ $ppn->Needed_by }}
-                                            @elseif ($ppn->workorder)
-                                                {{ $ppn->workorder->kode_wo }}
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                        <td>{{ \Carbon\Carbon::parse($ppn->Date_pengajuan)->format('d-m-Y') }}</td>
-                                        <td>Rp {{ number_format((float) $ppn->Total, 0, ',', '.') }}</td>
-                                        <td>
-                                            <div class="d-flex gap-2">
-                                                <form class="form-restore"
-                                                    action="{{ route('page.ppn.restore', $ppn->id) }}" method="POST"
-                                                    data-id="{{ $ppn->id }}">
-                                                    @csrf
-                                                    <button class="btn btn-success btn-sm">Restore</button>
-                                                </form>
+                {{-- ===== MOBILE CARD ===== --}}
+                <div class="d-block d-md-none">
+                    @foreach ($data as $d)
+                        @php $selisih = Carbon::now()->diffInDays($d->created_at); @endphp
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-body">
 
-                                                <form class="form-force-delete"
-                                                    action="{{ route('page.ppn.forceDelete', $ppn->id) }}" method="POST"
-                                                    data-id="{{ $ppn->id }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus
-                                                        Permanen</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center">Tidak ada data terhapus</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="fw-bold">{{ $d->no_faktur }}</h6>
+                                    <span class="badge bg-primary">
+                                        {{ Carbon::parse($d->tanggal)->format('d-m-Y') }}
+                                    </span>
+                                </div>
+
+                                <small class="text-muted">{{ $d->vendor }}</small>
+                                <hr>
+
+                                <div class="small">
+                                    <div class="d-flex justify-content-between">
+                                        <span>DPP</span>
+                                        <span>Rp {{ number_format($d->dpp, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>PPN</span>
+                                        <span>Rp {{ number_format($d->ppn, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between fw-bold">
+                                        <span>Total</span>
+                                        <span class="text-success">
+                                            Rp {{ number_format($d->total, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2 mt-3">
+                                    @if ($selisih <= 7)
+                                        <a href="{{ route('page.ppn.edit', $d->id) }}"
+                                            class="btn btn-warning btn-sm w-100">Edit</a>
+                                    @else
+                                        <span class="badge bg-secondary w-100 py-2 text-center">
+                                            Edit Expired
+                                        </span>
+                                    @endif
+
+                                    <form class="w-100" action="{{ route('page.ppn.destroy', $d->id) }}" method="POST">
+                                        @csrf @method('DELETE')
+                                        <button class="btn btn-danger btn-sm w-100">Hapus</button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
+
+            {{-- ================= DATA TERHAPUS ================= --}}
+            <div class="tab-pane fade" id="hapus">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>No Faktur</th>
+                                <th>Vendor</th>
+                                <th>Total</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($trashed as $d)
+                                <tr>
+                                    <td>{{ $d->no_faktur }}</td>
+                                    <td>{{ $d->vendor }}</td>
+                                    <td>Rp {{ number_format($d->total, 0, ',', '.') }}</td>
+                                    <td>
+                                        <form action="{{ route('ppn.restore', $d->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button class="btn btn-success btn-sm">Restore</button>
+                                        </form>
+                                        <form action="{{ route('ppn.forceDelete', $d->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-danger btn-sm">Hapus Permanen</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">Tidak ada data</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
-    @endsection
-
-    @push('scripts')
-        <script>
-            $(document).ready(function() {
-                $('#example').DataTable();
-
-                // === Soft Delete ===
-                $(document).on('submit', '.form-soft-delete', function(e) {
-                    e.preventDefault();
-                    if (!confirm('Yakin mau hapus data ini (soft delete)?')) return;
-
-                    let form = $(this);
-                    $.ajax({
-                        url: form.attr('action'),
-                        type: 'DELETE',
-                        data: form.serialize(),
-                        success: function(res) {
-                            if (res.status === 'success') {
-                                alert(res.message);
-                                location.reload(); // ✅ auto refresh
-                            } else {
-                                alert('Gagal hapus data.');
-                            }
-                        },
-                        error: function() {
-                            alert('Terjadi kesalahan.');
-                        }
-                    });
-                });
-
-                // === Restore ===
-                $(document).on('submit', '.form-restore', function(e) {
-                    e.preventDefault();
-                    let form = $(this);
-
-                    $.ajax({
-                        url: form.attr('action'),
-                        type: 'POST',
-                        data: form.serialize(),
-                        success: function(res) {
-                            if (res.status === 'success') {
-                                alert(res.message);
-                                location.reload(); // ✅ auto refresh
-                            } else {
-                                alert('Gagal restore data.');
-                            }
-                        },
-                        error: function() {
-                            alert('Terjadi kesalahan saat restore.');
-                        }
-                    });
-                });
-
-                // === Force Delete ===
-                $(document).on('submit', '.form-force-delete', function(e) {
-                    e.preventDefault();
-                    if (!confirm('Yakin hapus permanen data ini?')) return;
-
-                    let form = $(this);
-                    $.ajax({
-                        url: form.attr('action'),
-                        type: 'DELETE',
-                        data: form.serialize(),
-                        success: function(res) {
-                            if (res.status === 'success') {
-                                alert(res.message);
-                                location.reload(); // ✅ auto refresh
-                            } else {
-                                alert('Gagal hapus permanen.');
-                            }
-                        },
-                        error: function() {
-                            alert('Terjadi kesalahan saat hapus permanen.');
-                        }
-                    });
-                });
-            });
-        </script>
-    @endpush
+    </div>
+@endsection

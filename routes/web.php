@@ -1,24 +1,29 @@
 <?php
 
-use App\Models\Indirecta;
 use App\Exports\ActualExport;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\TableController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\dashboardController;
-use App\Http\Controllers\WorkorderController;
-use App\Http\Controllers\Actual\PpnaController;
-use App\Http\Controllers\Pengajuan\PpnController;
-use App\Http\Controllers\Actual\LuarrabController;
+use App\Exports\RabsExport;
+use App\Exports\WorkorderAllExport;
 use App\Http\Controllers\Actual\IndirectaController;
+use App\Http\Controllers\Actual\LuarrabController;
+use App\Http\Controllers\Actual\PpnaController;
+use App\Http\Controllers\CncController;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\dashboardController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Pengajuan\DirectaController;
 use App\Http\Controllers\Pengajuan\DirectpController;
 use App\Http\Controllers\Pengajuan\IndirectpController;
+use App\Http\Controllers\Pengajuan\PpnController;
+use App\Http\Controllers\RabController;
+use App\Http\Controllers\RabpengajuanController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TableController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkorderController;
+use App\Models\Indirecta;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +44,19 @@ Route::middleware(['auth', 'can:isAdmin'])->group(function() {
     Route::get('/table', [TableController::class, 'index'])->name('table.index');
 });
 Route::get('/workorders/search', [WorkorderController::class, 'search'])->name('workorders.search');
+Route::get('/workorders',[WorkorderController::class, 'index'])->name('page.workorder.index');
+Route::get('/workorders/create', [WorkorderController::class, 'create'])->name('page.workorder.create');
+Route::post('/workorders', [WorkorderController::class, 'store'])->name('page.workorder.store');
+Route::get('/workorders/{id}', [WorkorderController::class, 'show'])->name('page.workorder.show');
+Route::get('/workorders/edit/{id}', [WorkorderController::class, 'edit'])->name('page.workorder.edit');
+Route::put('/workorders/{id}', [WorkorderController::class, 'update'])->name('page.workorder.update');
+Route::delete('/workorders/{id}', [WorkorderController::class, 'destroy'])->name('page.workorder.destroy');
+Route::post('/workorders/restore//{id}', [WorkorderController::class, 'restore'])->name('page.workorder.restore');
+Route::delete('/workorders/force-delete/{id}', [WorkorderController::class, 'forceDelete'])->name('page.workorder.forceDelete');
+Route::get('/workorder/{id}/detail', [WorkorderController::class, 'showDetail'])->name('page.workorder.detail');
+Route::get('/workorder/{id}/export-pdf', [WorkorderController::class, 'exportPdf'])->name('page.workorder.exportpdf');
+Route::get('/workorder/export-all-excel', [WorkorderController::class, 'exportAllExcel'])->name('page.workorder.exportall');
+
 
 Auth::routes();
 Route::middleware(['auth'])->group(function(){
@@ -132,7 +150,6 @@ Route::middleware(['guest'])->group(function(){
  Route::delete('/ppna/force-delete/{id}', [PpnaController::class, 'forceDelete'])->name('page.ppna.forceDelete');
  Route::get('/ppna.export', [PpnaController::class, 'exports'])->name('page.ppna.export');
 
-
  Route::get('/luarrab',[LuarrabController::class, 'index'])->name('page.luarrab.index');
  Route::get('/luarrab/create', [LuarrabController::class, 'create'])->name('page.luarrab.create');
  Route::post('/luarrab/store', [LuarrabController::class, 'store'])->name('page.luarrab.store');
@@ -147,3 +164,28 @@ Route::middleware(['guest'])->group(function(){
  Route::get('/report/actual', [ReportController::class, 'index'])->name('report.pengajuan_actual');
  Route::get('/report/actual/{wo}', [ReportController::class, 'getData'])->name('report.actual.data');
  Route::get('/report/export/{workorder_id}', [ReportController::class, 'exportActual'])->name('report.export');
+
+ Route::get('/form/rabindex',[RabpengajuanController::class, 'index'])->name('page.RAB.form.index');
+ Route::post('/form/rabstore', [RabpengajuanController::class, 'store'])->name('page.rab.store');
+ Route::get('/form/rabedit/{id}', [RabpengajuanController::class, 'edit'])->name('page.rab.edit');
+ Route::put('/form/rabupdate/{id}', [RabpengajuanController::class, 'update'])->name('page.rab.update');
+ Route::delete('/form/rabdestroy/{id}', [RabpengajuanController::class, 'destroy'])->name('page.rab.destroy');
+ Route::post('/form/rabrestore/{id}', [RabpengajuanController::class, 'restore'])->name('page.rab.restore');
+ Route::delete('/form/rabforcedelete/{id}', [RabpengajuanController::class, 'forceDelete'])->name('page.rab.forceDelete');
+ Route::get('/form/rabexport', [RabpengajuanController::class, 'export'])->name('page.rab.export');
+
+ Route::get('/approval/rabindex', [RabpengajuanController::class, 'indexApproval'])->name('page.RAB.approval.index');
+ Route::get('/approval/payment/{id}', [RabpengajuanController::class, 'indexpayment'])->name('page.RAB.approval.payment');
+ Route::get('/approval/reject/{id}', [RabpengajuanController::class, 'indexreject'])->name('page.RAB.approval.reject');
+ Route::get('/approval/partial/{id}', [RabpengajuanController::class, 'indexpartial'])->name('page.RAB.approval.partial');
+ Route::post('/approval/rabapprove/{id}', [RabpengajuanController::class, 'approve'])->name('page.rab.approve');
+ Route::post('/approval/rabreject/{id}', [RabpengajuanController::class, 'reject'])->name('page.rab.reject');
+ Route::post('/approval/rabpartial/{id}', [RabpengajuanController::class, 'partial'])->name('page.rab.partial');
+ Route::get('/summary', [RabpengajuanController::class, 'summary'])->name('page.RAB.summary.index');
+ Route::post('/rab/approval/import',[RabPengajuanController::class, 'import'])->name('page.RAB.approval.import');
+
+ Route::get('/monitoring-cnc', [CncController::class, 'page'])->name('cnc.page');
+
+
+
+   

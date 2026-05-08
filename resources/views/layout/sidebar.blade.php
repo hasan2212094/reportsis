@@ -115,13 +115,13 @@
     <div class="app-brand demo">
         <a href="{{ route('home') }}" class="app-brand-link">
             <span class="app-brand-logo demo">
-                <img src="{{ asset('sneat/assets/img/logo/logo-sis.png') }}" class="img-fluid" alt="logo sis"
-                    width="40" />
+                <img src="{{ asset('sneat/assets/img/logo/logo-sis.png') }}" width="40" />
             </span>
             <span class="app-brand-text demo menu-text fw-bold ms-2">SIS</span>
         </a>
+
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-            <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            <i class="bx bx-chevron-left bx-sm"></i>
         </a>
     </div>
 
@@ -129,23 +129,25 @@
 
     <ul class="menu-inner py-1">
 
-        {{-- Dashboard untuk semua --}}
-        <li class="menu-item active">
+        {{-- ================= DASHBOARD ================= --}}
+        <li class="menu-item {{ request()->routeIs('home') ? 'active' : '' }}">
             <a href="{{ route('home') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div>Dashboard</div>
             </a>
         </li>
 
-        {{-- Menu hanya untuk ADMIN --}}
-        @if (Auth::check() && Auth::user()->role === 'admin')
-            <li class="menu-item">
+        {{-- ================= USER (ADMIN ONLY) ================= --}}
+
+        @if (auth()->user()->role && strtolower(auth()->user()->role->name) === 'admin')
+            <li class="menu-item {{ request()->routeIs('table.*') ? 'open active' : '' }}">
                 <a href="javascript:void(0)" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-user"></i>
                     <div>User</div>
                 </a>
+
                 <ul class="menu-sub">
-                    <li class="menu-item">
+                    <li class="menu-item {{ request()->routeIs('table.index') ? 'active' : '' }}">
                         <a href="{{ route('table.index') }}" class="menu-link">
                             <div>List Users</div>
                         </a>
@@ -154,118 +156,120 @@
             </li>
         @endif
 
-        {{-- Menu Finance & Accounting (bisa diakses semua) --}}
-        <li class="menu-item">
+
+        {{-- ================= FINANCE & ACCOUNTING ================= --}}
+        <li class="menu-item {{ request()->is('direct*', 'indirect*', 'ppn*', 'luarrab*') ? 'open active' : '' }}">
             <a href="javascript:void(0)" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-box"></i>
-                <div sdata-i18n="User interface">Finance & Accounting</div>
+                <div>Finance & Accounting</div>
             </a>
+
             <ul class="menu-sub">
+
                 {{-- Pengajuan --}}
-                <li class="menu-item">
+                <li class="menu-item {{ request()->is('directp', 'indirectp', 'ppn') ? 'open active' : '' }}">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                         <div>Pengajuan</div>
                     </a>
                     <ul class="menu-sub ps-5">
-                        <li class="menu-item">
-                            <a href="/directp" class="menu-link d-flex align-items-center gap-2">
-                                <i class="bx bx-right-arrow-alt"></i>
+                        <li class="menu-item {{ request()->is('directp') ? 'active' : '' }}">
+                            <a href="/directp" class="menu-link">
                                 <div>Direct Cost</div>
                             </a>
                         </li>
-                        <li class="menu-item">
-                            <a href="/indirectp" class="menu-link d-flex align-items-center gap-2">
-                                <i class="bx bx-right-arrow-alt"></i>
+                        <li class="menu-item {{ request()->is('indirectp') ? 'active' : '' }}">
+                            <a href="/indirectp" class="menu-link">
                                 <div>Indirect Cost</div>
                             </a>
                         </li>
-                        <li class="menu-item">
-                            <a href="/ppn" class="menu-link d-flex align-items-center gap-2">
-                                <i class="bx bx-right-arrow-alt"></i>
+                        <li class="menu-item {{ request()->is('ppn') ? 'active' : '' }}">
+                            <a href="/ppn" class="menu-link">
                                 <div>PPN</div>
                             </a>
                         </li>
-                    </ul>
-                </li>
-                {{-- Actual --}}
-                <li class="menu-item">
-                    <a href="javascript:void(0)" class="menu-link menu-toggle">
-                        <div>Actual</div>
-                    </a>
-                    <ul class="menu-sub ps-5">
-                        <li class="menu-item"><a href="/directa" class="menu-link d-flex align-items-center gap-2">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                <div>Direct Cost</div>
-                            </a></li>
-                        <li class="menu-item"><a href="/indirecta" class="menu-link d-flex align-items-center gap-2">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                <div>Indirect Cost</div>
-                            </a></li>
-                        <li class="menu-item"><a href="/ppna" class="menu-link d-flex align-items-center gap-2">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                <div>PPN</div>
-                            </a></li>
-                        <li class="menu-item"><a href="/luarrab" class="menu-link d-flex align-items-center gap-2">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                <div>Diluar RAB</div>
-                            </a></li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="menu-sub ps-5">
-                <li class="menu-item">
-                    <a href="{{ route('report.pengajuan_actual') }}" class="menu-link">
-                        <div>Report Pengajuan & Actual</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-    </ul>
-    </li>
-    {{-- <li class="menu-item">
-            <a href="javascript:void(0)" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx bx-package"></i>
-                <div sdata-i18n="User interface">Purchasing</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="javascript:void(0)" class="menu-link menu-toggle">
-                        <div>Pengajuan</div>
-                    </a>
-                    <ul class="menu-sub ps-5">
-                        <li class="menu-item"><a href="" class="menu-link">
-                                <div>Direct Cost</div>
-                            </a></li>
-                        <li class="menu-item"><a href="" class="menu-link">
-                                <div>Indirect Cost</div>
-                            </a></li>
-                        <li class="menu-item"><a href="" class="menu-link">
-                                <div>PPN</div>
-                            </a></li>
                     </ul>
                 </li>
 
-                
-                <li class="menu-item">
+                {{-- Actual --}}
+                <li
+                    class="menu-item {{ request()->is('directa', 'indirecta', 'ppna', 'luarrab') ? 'open active' : '' }}">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                         <div>Actual</div>
                     </a>
                     <ul class="menu-sub ps-5">
-                        <li class="menu-item"><a href="" class="menu-link">
+                        <li class="menu-item {{ request()->is('directa') ? 'active' : '' }}">
+                            <a href="/directa" class="menu-link">
                                 <div>Direct Cost</div>
-                            </a></li>
-                        <li class="menu-item"><a href="" class="menu-link">
+                            </a>
+                        </li>
+                        <li class="menu-item {{ request()->is('indirecta') ? 'active' : '' }}">
+                            <a href="/indirecta" class="menu-link">
                                 <div>Indirect Cost</div>
-                            </a></li>
-                        <li class="menu-item"><a href="" class="menu-link">
+                            </a>
+                        </li>
+                        <li class="menu-item {{ request()->is('ppna') ? 'active' : '' }}">
+                            <a href="/ppna" class="menu-link">
                                 <div>PPN</div>
-                            </a></li>
-                        <li class="menu-item"><a href="" class="menu-link">
+                            </a>
+                        </li>
+                        <li class="menu-item {{ request()->is('luarrab') ? 'active' : '' }}">
+                            <a href="/luarrab" class="menu-link">
                                 <div>Diluar RAB</div>
-                            </a></li>
+                            </a>
+                        </li>
                     </ul>
-                </li> --}}
-    </ul>
-    </li>
+                </li>
+
+            </ul>
+        </li>
+
+        {{-- ================= MENU RAB ================= --}}
+        <li class="menu-item 
+{{ request()->routeIs('page.RAB.*') ? 'open active' : '' }}">
+            <a href="javascript:void(0)" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-receipt"></i>
+                <div>Pengajuan Dana</div>
+            </a>
+
+            <ul class="menu-sub">
+
+                <li class="menu-item {{ request()->routeIs('page.RAB.form.*') ? 'active' : '' }}">
+                    <a href="{{ route('page.RAB.form.index') }}" class="menu-link">
+                        <i class="bx bx-edit"></i>
+                        <div>Form Pengajuan</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {{ request()->routeIs('page.RAB.approval.*') ? 'active' : '' }}">
+                    <a href="{{ route('page.RAB.approval.index') }}" class="menu-link">
+                        <i class="bx bx-check-square"></i>
+                        <div>Approval</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {{ request()->routeIs('page.RAB.summary.*') ? 'active' : '' }}">
+                    <a href="{{ route('page.RAB.summary.index') }}" class="menu-link">
+                        <i class="bx bx-bar-chart-alt-2"></i>
+                        <div>Summary</div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+
+        {{-- ================= WORKORDER ================= --}}
+        <li class="menu-item {{ request()->routeIs('page.workorder.*') ? 'active' : '' }}">
+            <a href="{{ route('page.workorder.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-briefcase"></i>
+                <div>Workorder</div>
+            </a>
+        </li>
+
+        <li class="menu-item {{ request()->routeIs('cnc.*') ? 'active' : '' }}">
+            <a href="{{ route('cnc.page') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-briefcase"></i>
+                <div>Montoring CNC</div>
+            </a>
+        </li>
     </ul>
 </aside>
