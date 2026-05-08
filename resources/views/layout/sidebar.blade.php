@@ -271,5 +271,11 @@
                 <div>Montoring CNC</div>
             </a>
         </li>
+        <li class="menu-item {{ request()->routeIs('page.Projectmanager.*') ? 'active' : '' }}">
+            <a href="{{ route('page.Projectmanager.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-briefcase"></i>
+                <div>Project Manager</div>
+            </a>
+        </li>
     </ul>
 </aside>

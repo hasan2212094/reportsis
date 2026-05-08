@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProjectManager extends Model
 {
     use HasFactory;
-     protected $table = 'presetasis';
+     protected $table = 'project_managers';
      protected $fillable = [
             'workorder_id',
             'workarea',
@@ -28,7 +28,12 @@ class ProjectManager extends Model
             'bl_finish',
             'actual_start',
             'duration',
-            'unit'
+            'unit',
+            'date_awal',
+            'date_akhir',
+            'persentase_A',
+            'persentase_B',
+            'persentase_C',
           ];
           public function workorder()
           {

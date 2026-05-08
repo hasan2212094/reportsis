@@ -14,6 +14,7 @@ use App\Http\Controllers\Pengajuan\DirectaController;
 use App\Http\Controllers\Pengajuan\DirectpController;
 use App\Http\Controllers\Pengajuan\IndirectpController;
 use App\Http\Controllers\Pengajuan\PpnController;
+use App\Http\Controllers\ProjectManagerController;
 use App\Http\Controllers\RabController;
 use App\Http\Controllers\RabpengajuanController;
 use App\Http\Controllers\ReportController;
@@ -186,6 +187,9 @@ Route::middleware(['guest'])->group(function(){
 
  Route::get('/monitoring-cnc', [CncController::class, 'page'])->name('cnc.page');
 
+Route::get('/projectmanager', [ProjectManagerController::class, 'index'])->name('page.Projectmanager.index');
+Route::get('/projectmanager/create', [ProjectManagerController::class, 'create'])->name('page.projectmanager.create');
+Route::post('/projectmanager/store', [ProjectManagerController::class, 'store'])->name('projectmanager.store');
 
 
    
