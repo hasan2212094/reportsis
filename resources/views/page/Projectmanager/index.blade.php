@@ -1,215 +1,217 @@
 @extends('kerangka.master')
-@section('title', 'Project Manager Actual')
+@section('title', 'Project Plan Monitoring')
 
 @section('content')
+
     <div class="container-xxl flex-grow-1 container-p-y">
 
-        <h4 class="fw-bold mb-3">
-            <span class="text-muted fw-light">Tables /</span> Project Manager
-        </h4>
+        <div class="bg-white p-3 rounded shadow-sm border">
 
-        @include('components.alert')
+            {{-- HEADER --}}
+            <div class="flex justify-between items-start mb-3">
 
-        <a href="{{ route('page.projectmanager.create') }}"
-            class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow">
-            + Tambah Data
-        </a>
-    </div>
+                <div class="flex items-center gap-3">
 
-    <div class="bg-white shadow-lg rounded-xl border border-gray-100">
+                    <img src="{{ asset('assets/img/logo.png') }}" class="h-16">
 
-        <div class="overflow-x-auto">
+                    <div>
 
-            <table class="min-w-full text-sm">
+                        <h1 class="text-red-700 text-3xl font-bold uppercase leading-6">
+                            PT. SRIBARU INDAH SEJAHTERA
+                        </h1>
 
-                <thead class="bg-gray-50 border-b">
-                    <tr>
-                        <th class="px-4 py-3 text-left">ID</th>
-                        <th class="px-4 py-3 text-left">Workorder</th>
-                        <th class="px-4 py-3 text-left">Workarea</th>
-                        <th class="px-4 py-3 text-left">Perusahaan</th>
-                        <th class="px-4 py-3 text-left">Project</th>
-                        <th class="px-4 py-3 text-left">PM</th>
-                        <th class="px-4 py-3 text-right">Qty</th>
-                        <th class="px-4 py-3 text-center">Target</th>
-                        <th class="px-4 py-3 text-center">Actual</th>
-                        <th class="px-4 py-3 text-center">Status</th>
-                        <th class="px-4 py-3 text-center">Progress</th>
-                        <th class="px-4 py-3 text-left">Keterangan</th>
-                        <th class="px-4 py-3 text-center">Lampiran</th>
-                        <th class="px-4 py-3 text-center">Aksi</th>
-                    </tr>
-                </thead>
+                        <p class="text-[11px] uppercase leading-3 text-gray-600 mt-1">
+                            Manufacturer Of Engineered Transport Equipment,
+                            <br>
+                            Steel Construction & Fabrication
+                        </p>
 
-                <tbody class="divide-y">
+                    </div>
 
-                    @foreach ($projectmanagers as $persentasi)
-                        <tr class="hover:bg-gray-50 transition">
+                </div>
 
-                            <!-- ID -->
-                            <td class="px-4 py-3 whitespace-nowrap">
-                                {{ $persentasi->id }}
-                            </td>
+                <div>
 
-                            <!-- WORKORDER -->
-                            <td class="px-4 py-3 whitespace-nowrap font-medium">
-                                {{ $persentasi->workorder->nomer ?? '-' }}
-                            </td>
+                    <h1 class="text-5xl font-bold text-gray-700">
+                        Project Plan Monitoring
+                    </h1>
 
-                            <!-- WORKAREA -->
-                            <td class="px-4 py-3 whitespace-nowrap">
-                                {{ $persentasi->workarea }}
-                            </td>
+                </div>
 
-                            <!-- PT -->
-                            <td class="px-4 py-3 whitespace-nowrap truncate max-w-[150px]"
-                                title="{{ $persentasi->pt->name ?? '-' }}">
-                                {{ $persentasi->pt->name ?? '-' }}
-                            </td>
+            </div>
 
-                            <!-- PROJECT -->
-                            <td class="px-4 py-3 whitespace-nowrap">
-                                {{ $persentasi->project }}
-                            </td>
 
-                            <!-- PM -->
-                            <td class="px-4 py-3 whitespace-nowrap">
-                                {{ $persentasi->user_pm }}
-                            </td>
 
-                            <!-- QTY -->
-                            <td class="px-4 py-3 text-right whitespace-nowrap">
-                                {{ $persentasi->qty }}
-                            </td>
+            {{-- TABLE --}}
+            <div class="overflow-x-auto">
 
-                            <!-- TARGET -->
-                            <td class="px-4 py-3 text-center whitespace-nowrap">
-                                {{ \Carbon\Carbon::parse($persentasi->target_date)->format('d M Y') }}
-                            </td>
+                <table class="w-full border border-black text-center text-sm">
 
-                            <!-- ACTUAL -->
-                            <td class="px-4 py-3 text-center whitespace-nowrap">
-                                {{ $persentasi->actualfinish_date
-                                    ? \Carbon\Carbon::parse($persentasi->actualfinish_date)->format('d M Y')
-                                    : '-' }}
-                            </td>
+                    <thead>
 
-                            <!-- STATUS -->
-                            <td class="px-4 py-3 text-center whitespace-nowrap">
-                                @if ($persentasi->status_pekerjaan == 0)
-                                    <span class="bg-yellow-100 text-yellow-700 px-2 py-1 text-xs rounded">
-                                        Pending
-                                    </span>
-                                @elseif ($persentasi->status_pekerjaan == 1)
-                                    <span class="bg-blue-100 text-blue-700 px-2 py-1 text-xs rounded">
-                                        Progress
-                                    </span>
-                                @else
-                                    <span class="bg-green-100 text-green-700 px-2 py-1 text-xs rounded">
-                                        Done
-                                    </span>
-                                @endif
-                            </td>
+                        <tr class="font-bold">
 
-                            <!-- PROGRESS -->
-                            <td class="px-4 py-3 text-center">
-                                <div class="w-32 mx-auto">
-                                    <div class="w-full bg-gray-200 rounded-full h-2">
-                                        <div class="bg-green-500 h-2 rounded-full"
-                                            style="width: {{ $persentasi->persentase }}%">
-                                        </div>
-                                    </div>
-                                    <span class="text-xs text-gray-600">
-                                        {{ $persentasi->persentase }}%
-                                    </span>
-                                </div>
-                            </td>
+                            <th class="border border-black p-1">
+                                PROJECT NAME
+                            </th>
 
-                            <!-- KETERANGAN -->
-                            <td class="px-4 py-3 truncate max-w-[200px]" title="{{ $persentasi->keterangan }}">
-                                {{ $persentasi->keterangan ?? '-' }}
-                            </td>
+                            <th class="border border-black p-1">
+                                DATE
+                            </th>
 
-                            <!-- LAMPIRAN -->
-                            <td class="px-4 py-3 text-center">
-                                @if ($persentasi->images_progress && $persentasi->images_progress->count())
-                                    <div class="flex justify-center gap-2 flex-wrap">
-                                        @foreach ($persentasi->images_progress->take(3) as $img)
-                                            <img src="{{ asset('storage/' . $img->image_path) }}"
-                                                onclick="openModal('{{ asset('storage/' . $img->image_path) }}')"
-                                                class="w-10 h-10 object-cover rounded cursor-pointer hover:scale-110 transition">
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <span class="text-gray-400 text-xs">-</span>
-                                @endif
-                            </td>
+                            <th class="border border-black p-1">
+                                DEADLINE
+                            </th>
 
-                            <!-- AKSI -->
-                            <td class="px-4 py-3">
-                                <div class="flex justify-center gap-2">
+                            <th class="border border-black p-1">
+                                DAYS REMAINING
+                            </th>
 
-                                    <a href="{{ route('presentasi.edit', $persentasi->id) }}"
-                                        class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-xs">
-                                        Edit
-                                    </a>
+                            <th class="border border-black p-1">
+                                PROJECT STATUS
+                            </th>
 
-                                    <a href="{{ route('presentasi.indexprogress', $persentasi->id) }}"
-                                        class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs">
-                                        Progress
-                                    </a>
+                            <th class="border border-black bg-cyan-300 p-1">
+                                Grand Total %<br>
+                                Not Started
+                            </th>
 
-                                    <form action="{{ route('presentasi.destroy', $persentasi->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
+                            <th class="border border-black bg-lime-400 p-1">
+                                Grand Total %<br>
+                                In Progress
+                            </th>
 
-                                        <button onclick="return confirm('Yakin hapus data ini?')"
-                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">
-                                            Delete
-                                        </button>
-                                    </form>
-
-                                </div>
-                            </td>
+                            <th class="border border-black bg-green-600 text-white p-1">
+                                Grand Total %<br>
+                                Complete
+                            </th>
 
                         </tr>
-                    @endforeach
 
-                </tbody>
+                    </thead>
 
-            </table>
 
-        </div>
+                    <tbody>
 
-        {{-- PAGINATION --}}
-        <div class="p-4">
-            {{ $projectmanagers->links() }}
+                        @foreach ($projectmanagers as $project)
+                            @php
+
+                                $today = \Carbon\Carbon::now();
+
+                                $deadline = \Carbon\Carbon::parse($project->target_date);
+
+                                $daysRemaining = $today->diffInDays($deadline, false);
+
+                                // STATUS COLOR
+                                if ($project->status_pekerjaan == 'Completed') {
+                                    $statusColor = 'text-green-600';
+                                } elseif ($project->status_pekerjaan == 'In Progress') {
+                                    $statusColor = 'text-blue-600';
+                                } else {
+                                    $statusColor = 'text-gray-600';
+                                }
+
+                            @endphp
+
+
+                            <tr class="font-bold">
+
+                                {{-- PROJECT NAME --}}
+                                <td class="border border-black p-2">
+                                    {{ $project->workorder->kode_wo ?? '-' }}
+                                </td>
+
+                                {{-- DATE --}}
+                                <td class="border border-black p-2">
+                                    {{ \Carbon\Carbon::parse($project->date_awal)->translatedFormat('d F Y') }}
+                                </td>
+
+                                {{-- DEADLINE --}}
+                                <td class="border border-black p-2">
+                                    {{ \Carbon\Carbon::parse($project->target_date)->translatedFormat('d F Y') }}
+                                </td>
+
+                                {{-- DAYS --}}
+                                <td class="border border-black p-2">
+
+                                    @if ($daysRemaining < 0)
+                                        <span class="text-red-600">
+                                            Overdue
+                                        </span>
+                                    @else
+                                        <span class="text-green-600">
+                                            On Time
+                                        </span>
+                                    @endif
+
+                                </td>
+
+                                {{-- STATUS --}}
+                                <td class="border border-black p-2 uppercase">
+
+                                    @if ($project->persentase_A == 0)
+                                        <span class="text-gray-600">
+                                            Not Started
+                                        </span>
+                                    @elseif ($project->persentase_A == 100)
+                                        <span class="text-green-600">
+                                            Completed
+                                        </span>
+                                    @else
+                                        <span class="text-blue-600">
+                                            In Progress
+                                        </span>
+                                    @endif
+
+                                </td>
+
+
+                                {{-- NOT STARTED --}}
+                                <td class="border border-black bg-cyan-300 text-3xl font-bold">
+
+                                    @if ($project->persentase_A == 0)
+                                        {{ $project->persentase_A }}%
+                                    @else
+                                        0%
+                                    @endif
+
+                                </td>
+
+
+                                {{-- IN PROGRESS --}}
+                                <td class="border border-black bg-lime-400 text-3xl font-bold">
+
+                                    @if ($project->persentase_A > 0 && $project->persentase_A < 100)
+                                        {{ $project->persentase_A }}%
+                                    @else
+                                        0%
+                                    @endif
+
+                                </td>
+
+
+                                {{-- COMPLETE --}}
+                                <td class="border border-black bg-green-600 text-white text-3xl font-bold">
+
+                                    @if ($project->persentase_A == 100)
+                                        {{ $project->persentase_A }}%
+                                    @else
+                                        0%
+                                    @endif
+
+                                </td>
+
+                            </tr>
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
         </div>
 
     </div>
 
-    </div>
-    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50">
-
-        <div class="relative">
-            <img id="modalImage" class="max-w-[90vw] max-h-[80vh] rounded shadow-lg">
-
-            <!-- tombol close -->
-            <button onclick="closeModal()" class="absolute top-2 right-2 bg-white text-black px-3 py-1 rounded shadow">
-                ✕
-            </button>
-        </div>
-
-    </div>
-    <script>
-        function openModal(src) {
-            document.getElementById('imageModal').classList.remove('hidden');
-            document.getElementById('imageModal').classList.add('flex');
-            document.getElementById('modalImage').src = src;
-        }
-
-        function closeModal() {
-            document.getElementById('imageModal').classList.add('hidden');
-        }
-    </script>
 @endsection

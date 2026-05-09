@@ -52,7 +52,7 @@
                             <option value="">--Pilih WO--</option>
                             @foreach ($workorders as $workorder)
                                 <option value="{{ $workorder->id }}">
-                                    {{ $workorder->nomer }}
+                                    {{ $workorder->kode_wo }}
                                 </option>
                             @endforeach
                         </select>
@@ -61,36 +61,12 @@
                     <!-- Work Area -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">
-                            Work Area
+                            Date Awal
                         </label>
-                        <input type="text" name="workarea" class="w-full mt-1 px-4 py-2 border rounded-lg">
+                        <input type="date" name="date_awal" class="w-full mt-1 px-4 py-2 border rounded-lg">
                     </div>
 
                     <!-- Project -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">
-                            Project
-                        </label>
-                        <input type="text" name="project" class="w-full mt-1 px-4 py-2 border rounded-lg">
-                    </div>
-
-                    <!-- PM -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">
-                            PM
-                        </label>
-                        <input type="text" name="user_pm" class="w-full mt-1 px-4 py-2 border rounded-lg">
-                    </div>
-
-                    <!-- QTY -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">
-                            QTY
-                        </label>
-                        <input type="number" name="qty" class="w-full mt-1 px-4 py-2 border rounded-lg">
-                    </div>
-
-                    <!-- Target Date -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">
                             Target Date
@@ -98,6 +74,13 @@
                         <input type="date" name="target_date" class="w-full mt-1 px-4 py-2 border rounded-lg">
                     </div>
 
+                    <!-- PM -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Persentase
+                        </label>
+                        <input type="integer" name="persentase_A" class="w-full mt-1 px-4 py-2 border rounded-lg">
+                    </div>
                 </div>
 
                 <!-- Footer -->

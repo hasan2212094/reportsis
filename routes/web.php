@@ -190,6 +190,7 @@ Route::middleware(['guest'])->group(function(){
 Route::get('/projectmanager', [ProjectManagerController::class, 'index'])->name('page.Projectmanager.index');
 Route::get('/projectmanager/create', [ProjectManagerController::class, 'create'])->name('page.projectmanager.create');
 Route::post('/projectmanager/store', [ProjectManagerController::class, 'store'])->name('projectmanager.store');
+Route::get('/project-monitoring/{id}',[ProjectManagerController::class, 'monitoring'])->name('project.monitoring');
 
 
    
