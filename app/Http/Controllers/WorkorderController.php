@@ -76,7 +76,7 @@ class WorkorderController extends Controller
         'wo_date'          => 'nullable|date',
         'nama_produk'      => 'nullable|string|max:255',
         'type_unit'        => 'nullable|string|max:100',
-        'pekerjaan_selesai'=> 'nullable|string',
+        'pekerjaan_selesai'=> 'nullable|date',
         'pekerjaan_termasuk'=> 'nullable|string',
         'pekerjaan_tidak_termasuk'=> 'nullable|string',
         'garansi'          => 'nullable|string',
@@ -137,7 +137,7 @@ class WorkorderController extends Controller
         'wo_date'          => 'nullable|date',
         'nama_produk'      => 'nullable|string|max:255',
         'type_unit'        => 'nullable|string|max:100',
-        'pekerjaan_selesai'=> 'nullable|string',
+        'pekerjaan_selesai'=> 'nullable|date',
         'pekerjaan_termasuk'=> 'nullable|string',
         'pekerjaan_tidak_termasuk'=> 'nullable|string',
         'garansi'          => 'nullable|string',
@@ -245,6 +245,7 @@ public function forceDelete($id)
 
     return response()->json($data);
 }
+
 
 public function showDetail($id)
 {

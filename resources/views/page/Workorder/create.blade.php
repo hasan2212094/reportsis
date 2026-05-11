@@ -102,7 +102,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Pekerjaan Selesai</label>
-                            <input type="text" name="pekerjaan_selesai" class="form-control"
+                            <input type="date" name="pekerjaan_selesai" class="form-control"
                                 value="{{ old('pekerjaan_selesai') }}">
                         </div>
 

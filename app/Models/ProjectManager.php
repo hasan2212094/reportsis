@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Projectmanagerunit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ProjectManagerTask;
 
 class ProjectManager extends Model
 {
@@ -48,4 +49,9 @@ class ProjectManager extends Model
           {
                return $this->hasMany(Projectmanagerunit::class);
           }
+
+          public function tasks()
+            {
+                return $this->hasMany(ProjectManagerTask::class);
+            }
 }

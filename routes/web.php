@@ -188,9 +188,13 @@ Route::middleware(['guest'])->group(function(){
  Route::get('/monitoring-cnc', [CncController::class, 'page'])->name('cnc.page');
 
 Route::get('/projectmanager', [ProjectManagerController::class, 'index'])->name('page.Projectmanager.index');
-Route::get('/projectmanager/create', [ProjectManagerController::class, 'create'])->name('page.projectmanager.create');
+Route::get('/projectmanager/create', [ProjectManagerController::class, 'createpm'])->name('page.projectmanager.create');
 Route::post('/projectmanager/store', [ProjectManagerController::class, 'store'])->name('projectmanager.store');
 Route::get('/project-monitoring/{id}',[ProjectManagerController::class, 'monitoring'])->name('project.monitoring');
+Route::get('/projectmanager/{id}/edit',[ProjectManagerController::class, 'edit'])->name('projectmanager.edit');
+Route::put('/projectmanager/{id}',[ProjectManagerController::class, 'update'])->name('projectmanager.update');
+Route::post('/projectmanager/task/store',[ProjectManagerController::class, 'storeTask'])->name('projectmanager.task.store');
+
 
 
    

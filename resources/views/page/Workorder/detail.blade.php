@@ -70,7 +70,7 @@
 
         <div class="col-md-6">
             <label class="form-label">Pekerjaan Selesai</label>
-            <input type="text" class="form-control" value="{{ $wo->pekerjaan_selesai ?? '' }}" disabled>
+            <input type="date" class="form-control" value="{{ $wo->pekerjaan_selesai ?? '' }}" disabled>
         </div>
 
         <div class="col-md-6">
