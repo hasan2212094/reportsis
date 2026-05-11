@@ -41,46 +41,31 @@
             <form action="{{ route('projectmanager.store') }}" method="POST">
                 @csrf
 
-                <div class="p-6 grid grid-cols-2 gap-5">
+                <div class="p-6">
 
                     <!-- Workorder -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">
                             Workorder
                         </label>
+
                         <select name="workorder_id" class="w-full mt-1 px-4 py-2 border rounded-lg">
-                            <option value="">--Pilih WO--</option>
+
+                            <option value="">
+                                --Pilih WO--
+                            </option>
+
                             @foreach ($workorders as $workorder)
                                 <option value="{{ $workorder->id }}">
+
                                     {{ $workorder->kode_wo }}
+
                                 </option>
                             @endforeach
+
                         </select>
                     </div>
 
-                    <!-- Work Area -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">
-                            Date Awal
-                        </label>
-                        <input type="date" name="date_awal" class="w-full mt-1 px-4 py-2 border rounded-lg">
-                    </div>
-
-                    <!-- Project -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">
-                            Target Date
-                        </label>
-                        <input type="date" name="target_date" class="w-full mt-1 px-4 py-2 border rounded-lg">
-                    </div>
-
-                    <!-- PM -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">
-                            Persentase
-                        </label>
-                        <input type="integer" name="persentase_A" class="w-full mt-1 px-4 py-2 border rounded-lg">
-                    </div>
                 </div>
 
                 <!-- Footer -->
@@ -88,17 +73,20 @@
 
                     <a href="{{ route('page.Projectmanager.index') }}"
                         class="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-100">
+
                         Batal
+
                     </a>
 
                     <button type="submit" class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow">
+
                         Simpan
+
                     </button>
 
                 </div>
 
             </form>
-
         </div>
 
     </div>

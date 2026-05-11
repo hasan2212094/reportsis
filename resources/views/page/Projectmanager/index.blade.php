@@ -35,7 +35,24 @@
                     <h1 class="text-5xl font-bold text-gray-700">
                         Project Plan Monitoring
                     </h1>
+                    <a href="{{ route('page.projectmanager.create') }}"
+                        style="
+        background:#2563eb;
+        color:white;
+        padding:12px 20px;
+        border-radius:16px;
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+        font-weight:bold;
+        text-decoration:none;
+    ">
 
+                        <span style="font-size:20px;">+</span>
+
+                        <span>Add Project</span>
+
+                    </a>
                 </div>
 
             </div>
