@@ -12,7 +12,7 @@
 
                 <div class="flex items-center gap-3">
 
-                    <img src="{{ asset('assets/img/logo.png') }}" class="h-16">
+                    {{-- <img src="{{ asset('assets/img/logo.png') }}" class="h-16"> --}}
 
                     <div>
 
