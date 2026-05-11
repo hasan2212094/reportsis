@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Projectmanagerunit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,6 +44,8 @@ class ProjectManager extends Model
           {
               return $this->hasMany(ImagesPM::class);
           }
-
-
+          public function units()
+          {
+               return $this->hasMany(Projectmanagerunit::class);
+          }
 }

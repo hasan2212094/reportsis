@@ -102,18 +102,10 @@
 
                                 $daysRemaining = $today->diffInDays($deadline, false);
 
-                                // STATUS COLOR
-                                if ($project->status_pekerjaan == 'Completed') {
-                                    $statusColor = 'text-green-600';
-                                } elseif ($project->status_pekerjaan == 'In Progress') {
-                                    $statusColor = 'text-blue-600';
-                                } else {
-                                    $statusColor = 'text-gray-600';
-                                }
-
                             @endphp
 
 
+                            {{-- PROJECT ROW --}}
                             <tr class="font-bold">
 
                                 {{-- PROJECT NAME --}}
@@ -135,13 +127,11 @@
                                 <td class="border border-black p-2">
 
                                     @if ($daysRemaining < 0)
-                                        <span class="text-red-600">
-                                            Overdue
-                                        </span>
+                                        Overdue {{ abs($daysRemaining) }} Days
+                                    @elseif ($daysRemaining == 0)
+                                        Deadline Today
                                     @else
-                                        <span class="text-green-600">
-                                            On Time
-                                        </span>
+                                        {{ $daysRemaining }} Days Left
                                     @endif
 
                                 </td>
@@ -198,6 +188,99 @@
                                     @else
                                         0%
                                     @endif
+
+                                </td>
+
+                            </tr>
+
+
+
+                            {{-- UNIT GRAPH ROW --}}
+                            <tr>
+
+                                <td colspan="8" class="border border-black p-6 bg-gray-50">
+
+                                    <h1 class="text-4xl font-bold mb-10">
+
+                                        Percentage Progress Job
+
+                                    </h1>
+
+
+                                    {{-- GRAPH AREA --}}
+                                    <div class="flex justify-center items-end gap-10 flex-wrap min-h-[450px]">
+
+                                        @foreach ($project->units as $unit)
+                                            @php
+
+                                                $height = max($unit->persentase * 3, 40);
+
+                                                // COLOR
+                                                if ($unit->persentase == 0) {
+                                                    $color = '#9CA3AF';
+                                                } elseif ($unit->persentase == 100) {
+                                                    $color = '#22C55E';
+                                                } else {
+                                                    $color = '#FACC15';
+                                                }
+
+                                            @endphp
+
+
+                                            <div class="flex flex-col items-center">
+
+                                                {{-- BAR AREA --}}
+                                                <div class="relative flex items-end h-[320px]">
+
+                                                    {{-- BAR --}}
+                                                    <div class="w-32 rounded-t-3xl shadow-2xl transition-all duration-700 flex items-center justify-center"
+                                                        style="
+                                height: {{ $height }}px;
+                                background: {{ $color }};
+                            ">
+
+                                                        <span class="text-3xl font-bold text-white">
+
+                                                            {{ $unit->persentase }}%
+
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                {{-- STATUS --}}
+                                                <div class="mt-5 text-lg font-semibold">
+
+                                                    @if ($unit->persentase == 0)
+                                                        <span class="text-gray-500">
+                                                            Not Started
+                                                        </span>
+                                                    @elseif ($unit->persentase == 100)
+                                                        <span class="text-green-600">
+                                                            Completed
+                                                        </span>
+                                                    @else
+                                                        <span class="text-yellow-500">
+                                                            In Progress
+                                                        </span>
+                                                    @endif
+
+                                                </div>
+
+
+                                                {{-- UNIT --}}
+                                                <div class="mt-2 text-2xl font-bold">
+
+                                                    UNIT {{ $unit->unit_no }}
+
+                                                </div>
+
+                                            </div>
+                                        @endforeach
+
+                                    </div>
 
                                 </td>
 
