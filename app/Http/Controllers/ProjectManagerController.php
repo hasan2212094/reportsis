@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProjectManager;
+use App\Models\ProjectManagerTask;
 use App\Models\Projectmanagerunit;
 use App\Models\Workorder;
 use Carbon\Carbon;
@@ -18,7 +19,7 @@ class ProjectManagerController extends Controller
     ])->paginate(10);
 
     return view(
-        'page.Projectmanager.index',
+        'page.Projectmanager.list',
         compact('projectmanagers')
     );
 }
@@ -61,15 +62,6 @@ public function createpm()
         'page.Projectmanager.create',
         compact('workorders')
     );
-}
-
-public function monitoring($id)
-{
-    $project = ProjectManager::with('workorder')
-        ->findOrFail($id);
-
-    return view('page.Projectmanager.monitoring',
-        compact('project'));
 }
 
 public function create()
@@ -259,6 +251,35 @@ public function storeTask(Request $request)
             ->with('error', $e->getMessage());
     }
 }
+
+public function detail($id)
+{
+    $project = ProjectManager::with([
+        'workorder',
+        'units',
+        'tasks'
+    ])->findOrFail($id);
+
+    return view(
+        'page.Projectmanager.detail',
+        compact('project')
+    );
+}
+
+public function dashboard()
+{
+    $projectmanagers = ProjectManager::with([
+        'workorder',
+        'units',
+        'tasks'
+    ])->get();
+
+    return view(
+        'page.Projectmanager.dashboard',
+        compact('projectmanagers')
+    );
+}
+
 
 
 }

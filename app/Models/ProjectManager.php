@@ -39,7 +39,7 @@ class ProjectManager extends Model
           ];
           public function workorder()
           {
-              return $this->belongsTo(Workorder::class);
+              return $this->belongsTo(Workorder::class,'workorder_id');
           }
           public function imagesPM()
           {
