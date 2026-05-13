@@ -325,24 +325,30 @@
 
 
                 {{-- CONTENT --}}
-                <div class="content-wrapper">
+                <div class="content-wrapper"
+                    style="
+            overflow-x:auto;
+            overflow-y:hidden;
+        ">
 
                     @yield('content')
 
                 </div>
 
-
-
-                {{-- FOOTER --}}
-                @include('layout.footer')
-
             </div>
+
+
+
+            {{-- FOOTER --}}
+            @include('layout.footer')
 
         </div>
 
+    </div>
 
 
-        <div class="layout-overlay layout-menu-toggle"></div>
+
+    <div class="layout-overlay layout-menu-toggle"></div>
 
     </div>
 

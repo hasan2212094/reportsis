@@ -6,342 +6,454 @@
 
     <div class="container-fluid py-4">
 
-        <div class="bg-white rounded-3xl shadow-lg border border-gray-300 p-4">
+        <div style="
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:5px;
+">
 
-            {{-- TITLE --}}
-            <div class="mb-6">
+            <a href="{{ route('page.Projectmanager.index') }}"
+                style="
+            display:inline-flex;
+            align-items:center;
+            gap:14px;
 
-                <h1 class="text-5xl font-black text-slate-700 tracking-tight">
+            padding:14px 24px;
 
-                    Project Plan Monitoring
+            border-radius:20px;
 
-                </h1>
+            background:linear-gradient(
+                135deg,
+                #2563eb,
+                #06b6d4
+            );
 
-            </div>
+            color:white;
+            font-weight:700;
+            font-size:14px;
 
-            {{-- PROJECT TABLE --}}
-            <div class="w-full overflow-hidden rounded-2xl border border-gray-300">
+            text-decoration:none;
 
-                <table class="w-full table-auto border-collapse text-[12px]">
+            box-shadow:
+                0 10px 25px rgba(37,99,235,0.35);
 
-                    <thead>
+            transition:all 0.3s ease;
+        "
+                onmouseover="
+            this.style.transform='scale(1.05)';
+            this.style.boxShadow='0 15px 35px rgba(6,182,212,0.45)';
+        "
+                onmouseout="
+            this.style.transform='scale(1)';
+            this.style.boxShadow='0 10px 25px rgba(37,99,235,0.35)';
+        ">
 
-                        <tr class="bg-slate-800">
+                {{-- ICON --}}
+                <div
+                    style="
+            width:42px;
+            height:42px;
 
-                            <th class="border border-gray-300 px-3 py-2">
-                                PROJECT NAME
-                            </th>
+            border-radius:14px;
 
-                            <th class="border border-gray-300 px-3 py-2">
-                                DATE
-                            </th>
+            background:rgba(255,255,255,0.2);
 
-                            <th class="border border-gray-300 px-3 py-2">
-                                DEADLINE
-                            </th>
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        ">
 
-                            <th class="border border-gray-300 px-3 py-2">
-                                DAYS REMAINING
-                            </th>
+                    <i class="bx bx-home-alt"
+                        style="
+                    font-size:24px;
+                    color:white;
+                ">
 
-                            <th class="border border-gray-300 px-3 py-2">
-                                PROJECT STATUS
-                            </th>
+                    </i>
 
-                            <th class="border border-gray-300 px-3 py-2 bg-cyan-500">
-                                NOT STARTED
-                            </th>
+                </div>
 
-                            <th class="border border-gray-300 px-3 py-2 bg-yellow-500">
-                                IN PROGRESS
-                            </th>
+                {{-- TEXT --}}
+                <div style="line-height:1.2;">
 
-                            <th class="border border-gray-300 px-3 py-2 bg-green-600">
-                                COMPLETE
-                            </th>
+                    <div style="
+                font-size:11px;
+                opacity:0.8;
+            ">
 
-                        </tr>
+                        Back To
 
-                    </thead>
+                    </div>
 
+                    <div style="
+                font-size:14px;
+                font-weight:700;
+            ">
 
+                        Project List
 
-                    <tbody>
+                    </div>
 
-                        @php
+                </div>
 
-                            $currentDate = \Carbon\Carbon::now();
+            </a>
 
-                            $finishDate = \Carbon\Carbon::parse($project->workorder->pekerjaan_selesai);
+        </div>
 
-                            $daysRemaining = $currentDate->diffInDays($finishDate, false) + 1;
+        {{-- TITLE --}}
+        <div class="mb-6">
 
-                        @endphp
+            <h1 class="text-5xl font-black text-slate-700 tracking-tight">
 
+                Project Plan Monitoring
 
+            </h1>
 
-                        {{-- PROJECT ROW --}}
-                        <tr class="bg-white text-black font-semibold">
+        </div>
 
-                            <td class="border border-gray-300 px-3 py-3 text-left">
+        {{-- PROJECT TABLE --}}
+        <div class="inline-block min-w-full rounded-2xl border border-gray-300 bg-white">
 
-                                <a href="{{ route('project.detail', $project->id) }}">
+            <table class="table-auto border-collapse text-[12px] w-max min-w-full">
 
-                                    {{ $project->workorder->kode_wo }}
-                                    -
-                                    {{ $project->workorder->customer_name }}
+                <thead>
 
-                                </a>
+                    <tr class="bg-slate-800">
 
-                            </td>
+                        <th class="border border-gray-300 px-3 py-2">
+                            PROJECT NAME
+                        </th>
 
+                        <th class="border border-gray-300 px-3 py-2">
+                            DATE
+                        </th>
 
+                        <th class="border border-gray-300 px-3 py-2">
+                            DEADLINE
+                        </th>
 
-                            <td class="border border-gray-300 px-3 py-3">
+                        <th class="border border-gray-300 px-3 py-2">
+                            DAYS REMAINING
+                        </th>
 
-                                {{ \Carbon\Carbon::parse($project->workorder->wo_date)->translatedFormat('d M Y') }}
+                        <th class="border border-gray-300 px-3 py-2">
+                            PROJECT STATUS
+                        </th>
 
-                            </td>
+                        <th class="border border-gray-300 px-3 py-2 bg-cyan-500">
+                            NOT STARTED
+                        </th>
 
+                        <th class="border border-gray-300 px-3 py-2 bg-yellow-500">
+                            IN PROGRESS
+                        </th>
 
+                        <th class="border border-gray-300 px-3 py-2 bg-green-600">
+                            COMPLETE
+                        </th>
 
-                            <td class="border border-gray-300 px-3 py-3">
+                    </tr>
 
-                                {{ \Carbon\Carbon::parse($project->workorder->pekerjaan_selesai)->translatedFormat('d M Y') }}
+                </thead>
 
-                            </td>
 
 
+                <tbody>
 
-                            <td class="border border-gray-300 px-3 py-3">
+                    @php
 
-                                @if ($daysRemaining < 0)
-                                    <span class="text-red-600 font-bold">
+                        $currentDate = \Carbon\Carbon::now();
 
-                                        Overdue
+                        $finishDate = \Carbon\Carbon::parse($project->workorder->pekerjaan_selesai);
 
-                                    </span>
-                                @elseif ($daysRemaining == 0)
-                                    <span class="text-orange-500 font-bold">
+                        $daysRemaining = $currentDate->diffInDays($finishDate, false) + 1;
 
-                                        Deadline Today
+                    @endphp
 
-                                    </span>
-                                @else
-                                    <span class="text-black">
 
-                                        {{ $daysRemaining }}
-                                        Days Left
 
-                                    </span>
-                                @endif
+                    {{-- PROJECT ROW --}}
+                    <tr class="bg-white text-black font-semibold">
 
-                            </td>
+                        <td class="border border-gray-300 px-3 py-3 text-left">
 
-                            <td class="border border-gray-300 px-3 py-3">
+                            <a href="{{ route('project.detail', $project->id) }}">
 
-                                @if ($projectStatus == 'NOT STARTED')
-                                    <span class="text-gray-700 font-bold">
+                                {{ $project->workorder->kode_wo }}
+                                -
+                                {{ $project->workorder->customer_name }}
 
-                                        Not Started
+                            </a>
 
-                                    </span>
-                                @elseif ($projectStatus == 'COMPLETE')
-                                    <span class="text-green-700 font-bold">
+                        </td>
 
-                                        Completed
 
-                                    </span>
-                                @else
-                                    <span class="text-yellow-700 font-bold">
 
-                                        In Progress
+                        <td class="border border-gray-300 px-3 py-3">
 
-                                    </span>
-                                @endif
+                            {{ \Carbon\Carbon::parse($project->workorder->wo_date)->translatedFormat('d M Y') }}
 
-                            </td>
+                        </td>
 
-                            <td class="border border-gray-300 px-3 py-3 bg-cyan-100 text-black font-bold">
 
-                                {{ $notStartedPercent }}%
 
-                            </td>
+                        <td class="border border-gray-300 px-3 py-3">
 
+                            {{ \Carbon\Carbon::parse($project->workorder->pekerjaan_selesai)->translatedFormat('d M Y') }}
 
+                        </td>
 
-                            <td class="border border-gray-300 px-3 py-3 bg-yellow-100 text-black font-bold">
 
-                                {{ $inProgressPercent }}%
 
-                            </td>
+                        <td class="border border-gray-300 px-3 py-3">
 
+                            @if ($daysRemaining < 0)
+                                <span class="text-red-600 font-bold">
 
+                                    Overdue
 
-                            <td class="border border-gray-300 px-3 py-3 bg-green-100 text-black font-bold">
+                                </span>
+                            @elseif ($daysRemaining == 0)
+                                <span class="text-orange-500 font-bold">
 
-                                {{ $completePercent }}%
+                                    Deadline Today
 
-                            </td>
+                                </span>
+                            @else
+                                <span class="text-black">
 
-                        </tr>
+                                    {{ $daysRemaining }}
+                                    Days Left
 
-                        {{-- UNIT GRAPH --}}
-                        <tr>
+                                </span>
+                            @endif
 
-                            <td colspan="8" class="bg-white border border-gray-300 p-8">
+                        </td>
 
-                                <h1 class="text-4xl font-bold text-center text-black mb-10">
+                        <td class="border border-gray-300 px-3 py-3">
 
-                                    Percentage Progress Job
+                            @if ($projectStatus == 'NOT STARTED')
+                                <span class="text-gray-700 font-bold">
 
-                                </h1>
+                                    Not Started
 
-                                <div style="height:500px;">
+                                </span>
+                            @elseif ($projectStatus == 'COMPLETE')
+                                <span class="text-green-700 font-bold">
+
+                                    Completed
+
+                                </span>
+                            @else
+                                <span class="text-yellow-700 font-bold">
+
+                                    In Progress
+
+                                </span>
+                            @endif
+
+                        </td>
+
+                        <td class="border border-gray-300 px-3 py-3 bg-cyan-100 text-black font-bold">
+
+                            {{ $notStartedPercent }}%
+
+                        </td>
+
+
+
+                        <td class="border border-gray-300 px-3 py-3 bg-yellow-100 text-black font-bold">
+
+                            {{ $inProgressPercent }}%
+
+                        </td>
+
+
+
+                        <td class="border border-gray-300 px-3 py-3 bg-green-100 text-black font-bold">
+
+                            {{ $completePercent }}%
+
+                        </td>
+
+                    </tr>
+
+                    {{-- UNIT GRAPH --}}
+                    <tr>
+
+                        <td colspan="{{ 9 + $project->workorder->quantity }}" class="bg-white border border-gray-300 p-8">
+
+                            <h1 class="text-4xl font-bold text-center text-black mb-10">
+
+                                Percentage Progress Job
+
+                            </h1>
+
+                            <div
+                                style="
+                                    width:100%;
+                                    overflow-x:auto;
+                                    overflow-y:hidden;
+                                ">
+
+                                <div
+                                    style="
+                                    width:{{ max(600, $project->workorder->quantity * 140) }}px;
+                                    height:500px;
+                                ">
 
                                     <canvas id="unitChart"></canvas>
 
                                 </div>
 
-                            </td>
+                            </div>
 
-                        </tr>
+                        </td>
 
-                        {{-- TASK TABLE --}}
-                        <tr>
+                    </tr>
 
-                            <td colspan="8" class="bg-white border border-gray-300 p-4">
+                    {{-- TASK TABLE --}}
+                    <tr>
 
-                                {{-- HEADER --}}
-                                <div class="flex justify-between items-center mb-4">
+                        <td colspan="{{ 9 + $project->workorder->quantity }}" class="bg-white border border-gray-300 p-4">
 
-                                    <div>
+                            {{-- HEADER --}}
+                            <div class="flex justify-between items-center mb-4">
 
-                                        <h1 class="text-2xl font-bold text-black">
+                                <div>
 
-                                            Task Monitoring
+                                    <h1 class="text-2xl font-bold text-black">
 
-                                        </h1>
+                                        Task Monitoring
 
-                                        <p class="text-black text-sm">
+                                    </h1>
 
-                                            Input Activity Progress
+                                    <p class="text-black text-sm">
 
-                                        </p>
+                                        Input Activity Progress
 
-                                    </div>
-
-
-
-                                    {{-- BUTTON --}}
-                                    <button onclick="addTaskRow({{ $project->id }})" type="button"
-                                        class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-xl font-bold shadow">
-
-                                        + Add Task
-
-                                    </button>
+                                    </p>
 
                                 </div>
 
 
 
+                                {{-- BUTTON --}}
+                                <button onclick="addTaskRow({{ $project->id }})" type="button"
+                                    class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-xl font-bold shadow">
 
-                                {{-- FORM --}}
-                                <form action="{{ route('projectmanager.task.store') }}" method="POST">
+                                    + Add Task
 
-                                    @csrf
+                                </button>
 
-                                    <input type="hidden" name="project_manager_id" value="{{ $project->id }}">
-
+                            </div>
 
 
-                                    <div class="w-full overflow-auto rounded-2xl border border-gray-300">
 
-                                        <table class="w-full table-fixed border-collapse text-[11px]">
 
-                                            <thead>
+                            {{-- FORM --}}
+                            <form action="{{ route('projectmanager.task.store') }}" method="POST">
 
-                                                <tr class="bg-slate-800 text-black">
+                                @csrf
 
-                                                    <th class="border border-gray-300 p-2 w-[180px]">
-                                                        TASK NAME
+                                <input type="hidden" name="project_manager_id" value="{{ $project->id }}">
+
+
+
+                                <div
+                                    style="
+                                    width:100%;
+                                    overflow-x:auto;
+                                    overflow-y:hidden;
+                                    border:1px solid #d1d5db;
+                                    border-radius:18px;
+                                ">
+
+                                    <table
+                                        style="
+                                        border-collapse:collapse;
+                                        width:max-content;
+                                        font-size:11px;
+                                    ">
+                                        <thead>
+
+                                            <tr class="bg-slate-800 text-black">
+
+                                                <th class="border border-gray-300 p-2 w-[180px]">
+                                                    TASK NAME
+                                                </th>
+
+                                                <th class="border border-gray-300 p-2 w-[120px]">
+                                                    ASSIGNED TO
+                                                </th>
+
+                                                <th class="border border-gray-300 p-2 w-[220px]">
+                                                    DETAIL ACTIVITY
+                                                </th>
+
+                                                <th class="border border-gray-300 p-2 w-[120px]">
+                                                    BL START
+                                                </th>
+
+                                                <th class="border border-gray-300 p-2 w-[120px]">
+                                                    BL FINISH
+                                                </th>
+
+                                                <th class="border border-gray-300 p-2 w-[120px]">
+                                                    ACT START
+                                                </th>
+
+                                                <th class="border border-gray-300 p-2 w-[120px]">
+                                                    ACT FINISH
+                                                </th>
+
+                                                <th class="border border-gray-300 p-2 w-[90px]">
+                                                    DURATION
+                                                </th>
+
+
+                                                <th class="border border-gray-300 p-2 w-[150px]">
+
+                                                    UNIT DETAIL
+
+                                                </th>
+                                                {{-- AUTO UNIT
+                                                @for ($i = 1; $i <= $project->workorder->quantity; $i++)
+                                                    <th class="border border-gray-300 p-2 bg-cyan-500"
+                                                        style="min-width:120px;">
+
+                                                        UNIT {{ $i }}
+
                                                     </th>
+                                                @endfor --}}
 
-                                                    <th class="border border-gray-300 p-2 w-[120px]">
-                                                        ASSIGNED TO
-                                                    </th>
+                                                <th class="border border-gray-300 p-2 w-[100px]">
+                                                    PRIORITY
+                                                </th>
+                                            </tr>
 
-                                                    <th class="border border-gray-300 p-2 w-[220px]">
-                                                        DETAIL ACTIVITY
-                                                    </th>
+                                        </thead>
 
-                                                    <th class="border border-gray-300 p-2 w-[120px]">
-                                                        BL START
-                                                    </th>
+                                        {{-- BODY --}}
+                                        <tbody id="taskTable{{ $project->id }}">
+                                            {{-- EXISTING TASK --}}
+                                            @foreach ($project->tasks as $task)
+                                                <tr class="bg-white text-black">
 
-                                                    <th class="border border-gray-300 p-2 w-[120px]">
-                                                        BL FINISH
-                                                    </th>
-
-                                                    <th class="border border-gray-300 p-2 w-[120px]">
-                                                        ACT START
-                                                    </th>
-
-                                                    <th class="border border-gray-300 p-2 w-[120px]">
-                                                        ACT FINISH
-                                                    </th>
-
-                                                    <th class="border border-gray-300 p-2 w-[90px]">
-                                                        DURATION
-                                                    </th>
-
-
-
-                                                    {{-- AUTO UNIT --}}
-                                                    @for ($i = 1; $i <= $project->workorder->quantity; $i++)
-                                                        <th class="border border-gray-300 p-2 bg-cyan-500 w-[90px]">
-
-                                                            UNIT {{ $i }}
-
-                                                        </th>
-                                                    @endfor
-
-
-
-                                                    <th class="border border-gray-300 p-2 w-[100px]">
-                                                        PRIORITY
-                                                    </th>
-
-                                                </tr>
-
-                                            </thead>
-
-
-
-
-                                            {{-- BODY --}}
-                                            <tbody id="taskTable{{ $project->id }}">
-
-
-
-                                                {{-- EXISTING TASK --}}
-                                                @foreach ($project->tasks as $task)
-                                                    <tr class="bg-white text-black">
-
-                                                        <td class="border border-gray-300 p-2"
-                                                            ondblclick="
+                                                    <td class="border border-gray-300 p-2"
+                                                        ondblclick="
                                                             editCell(
                                                                 this,
                                                                 {{ $task->id }},
                                                                 'task_name'
                                                             )
                                                              ">
-                                                            {{ $task->task_name }}
+                                                        {{ $task->task_name }}
 
-                                                        </td>
+                                                    </td>
 
-                                                        <td class="border border-gray-300 p-2"
-                                                            ondblclick="
+                                                    <td class="border border-gray-300 p-2"
+                                                        ondblclick="
                                                             editCell(
                                                                 this,
                                                                 {{ $task->id }},
@@ -349,12 +461,12 @@
                                                             )
                                                             ">
 
-                                                            {{ $task->pic }}
+                                                        {{ $task->pic }}
 
-                                                        </td>
+                                                    </td>
 
-                                                        <td class="border border-gray-300 p-2 text-left"
-                                                            ondblclick="
+                                                    <td class="border border-gray-300 p-2 text-left"
+                                                        ondblclick="
                                                             editCell(
                                                                 this,
                                                                 {{ $task->id }},
@@ -362,23 +474,23 @@
                                                             )
                                                             ">
 
-                                                            {{ $task->activity_detail }}
+                                                        {{ $task->activity_detail }}
 
-                                                        </td>
+                                                    </td>
 
-                                                        <td class="border border-gray-300 p-2"
-                                                            ondblclick="
+                                                    <td class="border border-gray-300 p-2"
+                                                        ondblclick="
                                                             editDateCell(
                                                                 this,
                                                                 {{ $task->id }},
                                                                 'bl_start'
                                                             )
                                                              ">
-                                                            {{ $task->bl_start }}
-                                                        </td>
+                                                        {{ $task->bl_start }}
+                                                    </td>
 
-                                                        <td class="border border-gray-300 p-2"
-                                                            ondblclick="
+                                                    <td class="border border-gray-300 p-2"
+                                                        ondblclick="
                                                             editDateCell(
                                                                 this,
                                                                 {{ $task->id }},
@@ -386,12 +498,12 @@
                                                             )
                                                         ">
 
-                                                            {{ $task->bl_finish }}
+                                                        {{ $task->bl_finish }}
 
-                                                        </td>
+                                                    </td>
 
-                                                        <td class="border border-gray-300 p-2"
-                                                            ondblclick="
+                                                    <td class="border border-gray-300 p-2"
+                                                        ondblclick="
                                                             editDateCell(
                                                                 this,
                                                                 {{ $task->id }},
@@ -399,12 +511,12 @@
                                                             )
                                                         ">
 
-                                                            {{ $task->act_start }}
+                                                        {{ $task->act_start }}
 
-                                                        </td>
+                                                    </td>
 
-                                                        <td class="border border-gray-300 p-2"
-                                                            ondblclick="
+                                                    <td class="border border-gray-300 p-2"
+                                                        ondblclick="
                                                             editDateCell(
                                                                 this,
                                                                 {{ $task->id }},
@@ -412,69 +524,53 @@
                                                             )
                                                         ">
 
-                                                            {{ $task->act_finish }}
+                                                        {{ $task->act_finish }}
 
-                                                        </td>
-                                                        <td class="border border-gray-300 p-2 font-bold text-blue-700">
+                                                    </td>
+                                                    <td class="border border-gray-300 p-2 font-bold text-blue-700">
 
-                                                            @php
+                                                        @php
 
-                                                                $start = \Carbon\Carbon::parse($task->bl_start);
+                                                            $start = \Carbon\Carbon::parse($task->bl_start);
 
-                                                                $finish = \Carbon\Carbon::parse($task->bl_finish);
+                                                            $finish = \Carbon\Carbon::parse($task->bl_finish);
 
-                                                                $days = $start->diffInDays($finish) + 1;
+                                                            $days = $start->diffInDays($finish) + 1;
 
-                                                            @endphp
+                                                        @endphp
 
-                                                            {{ $days }} Days
+                                                        {{ $days }} Days
 
-                                                        </td>
+                                                    </td>
 
-                                                        {{-- UNIT STATUS --}}
-                                                        @for ($i = 1; $i <= $project->workorder->quantity; $i++)
-                                                            @php
+                                                    <td class="border border-gray-300 p-2 text-center">
 
-                                                                $status = $task->{'unit_' . $i} ?? 0;
+                                                        <button type="button"
+                                                            onclick="
+                                                            toggleUnitDetail(
+                                                                {{ $task->id }}
+                                                            )
+                                                        "
+                                                            class="
+                                                            bg-cyan-500
+                                                            hover:bg-cyan-600
 
-                                                            @endphp
+                                                            text-black
+                                                            font-bold
 
-                                                            <td class="border border-gray-300 p-2 text-center font-bold cursor-pointer"
-                                                                ondblclick="
-                                                                editUnitStatus(
-                                                                    this,
-                                                                    {{ $task->id }},
-                                                                    'unit_{{ $i }}',
-                                                                    {{ $status }}
-                                                                )
-                                                            ">
+                                                            px-4 py-2
+                                                            rounded-xl
+                                                        ">
 
-                                                                @if ($status == 0)
-                                                                    <span class="text-gray-500">
+                                                            Detail Unit
 
-                                                                        Not Started
+                                                        </button>
 
-                                                                    </span>
-                                                                @elseif ($status == 1)
-                                                                    <span class="text-yellow-600">
+                                                    </td>
 
-                                                                        In Progress
-
-                                                                    </span>
-                                                                @else
-                                                                    <span class="text-green-600">
-
-                                                                        Complete
-
-                                                                    </span>
-                                                                @endif
-
-                                                            </td>
-                                                        @endfor
-
-                                                        <td class="border border-gray-300 p-2
+                                                    <td class="border border-gray-300 p-2
                                                         font-bold text-center cursor-pointer"
-                                                            ondblclick="
+                                                        ondblclick="
                                                             editSelectCell(
                                                                 this,
                                                                 {{ $task->id }},
@@ -482,177 +578,243 @@
                                                             )
                                                         ">
 
-                                                            {{ $task->priority ?? 'High' }}
-
-                                                        </td>
-
-                                                    </tr>
-                                                @endforeach
-
-
-
-
-                                                {{-- DEFAULT INPUT --}}
-                                                <tr class="bg-white text-black">
-
-                                                    <td class="border border-gray-300 p-1">
-
-                                                        <input type="text" name="task_name[]"
-                                                            class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+                                                        {{ $task->priority ?? 'High' }}
 
                                                     </td>
 
+                                                </tr>
+                                                <tr id="unitDetail{{ $task->id }}" style="display:none;">
 
+                                                    <td colspan="20" class="bg-slate-100 p-4">
 
-                                                    <td class="border border-gray-300 p-1">
+                                                        <div
+                                                            style="
+            display:grid;
+            grid-template-columns:
+                repeat(auto-fill,minmax(220px,1fr));
+            gap:12px;
+        ">
 
-                                                        <input type="text" name="pic[]"
-                                                            class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+                                                            @for ($i = 1; $i <= $project->workorder->quantity; $i++)
+                                                                @php
+                                                                    $status = $task->{'unit_' . $i} ?? 0;
+                                                                @endphp
+
+                                                                <div
+                                                                    style="
+                    background:white;
+                    border:1px solid #d1d5db;
+                    border-radius:14px;
+                    padding:14px;
+                ">
+
+                                                                    <div
+                                                                        style="
+                        font-weight:700;
+                        margin-bottom:10px;
+                        color:#0f172a;
+                    ">
+
+                                                                        UNIT {{ $i }}
+
+                                                                    </div>
+
+                                                                    <select
+                                                                        onchange="
+                                                                        saveUnitStatus(
+                                                                            this,
+                                                                            {{ $task->id }},
+                                                                            'unit_{{ $i }}',
+                                                                            this.value
+                                                                        )
+                                                                    "
+                                                                        style="
+                                                                        width:100%;
+                                                                        border:1px solid #d1d5db;
+                                                                        border-radius:10px;
+                                                                        padding:10px;
+                                                                    ">
+
+                                                                        <option value="0"
+                                                                            {{ $status == 0 ? 'selected' : '' }}>
+
+                                                                            Not Started
+
+                                                                        </option>
+
+                                                                        <option value="1"
+                                                                            {{ $status == 1 ? 'selected' : '' }}>
+
+                                                                            In Progress
+
+                                                                        </option>
+
+                                                                        <option value="2"
+                                                                            {{ $status == 2 ? 'selected' : '' }}>
+
+                                                                            Complete
+
+                                                                        </option>
+
+                                                                    </select>
+
+                                                                </div>
+                                                            @endfor
+
+                                                        </div>
 
                                                     </td>
 
-
-
-                                                    <td class="border border-gray-300 p-1">
-
-                                                        <textarea name="activity_detail[]" rows="1"
-                                                            class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]"></textarea>
-
-                                                    </td>
+                                                </tr>
+                                            @endforeach
 
 
 
-                                                    <td class="border border-gray-300 p-1">
 
-                                                        <input type="date" name="bl_start[]"
-                                                            class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+                                            {{-- DEFAULT INPUT --}}
+                                            <tr class="bg-white text-black">
 
-                                                    </td>
+                                                <td class="border border-gray-300 p-1">
 
+                                                    <input type="text" name="task_name[]"
+                                                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
 
-
-                                                    <td class="border border-gray-300 p-1">
-
-                                                        <input type="date" name="bl_finish[]"
-                                                            class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-                                                    </td>
+                                                </td>
 
 
 
-                                                    <td class="border border-gray-300 p-1">
+                                                <td class="border border-gray-300 p-1">
 
-                                                        <input type="date" name="act_start[]"
-                                                            class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+                                                    <input type="text" name="pic[]"
+                                                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
 
-                                                    </td>
-
-                                                    <td class="border border-gray-300 p-1">
-
-                                                        <input type="date" name="act_finish[]"
-                                                            class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-                                                    </td>
+                                                </td>
 
 
-                                                    <td class="border border-gray-300 p-1">
 
-                                                        <input type="text" value="Automatic" readonly tabindex="-1"
-                                                            class="w-full rounded border border-gray-300
+                                                <td class="border border-gray-300 p-1">
+
+                                                    <textarea name="activity_detail[]" rows="1"
+                                                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]"></textarea>
+
+                                                </td>
+
+
+
+                                                <td class="border border-gray-300 p-1">
+
+                                                    <input type="date" name="bl_start[]"
+                                                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+
+                                                </td>
+
+
+
+                                                <td class="border border-gray-300 p-1">
+
+                                                    <input type="date" name="bl_finish[]"
+                                                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+
+                                                </td>
+
+
+
+                                                <td class="border border-gray-300 p-1">
+
+                                                    <input type="date" name="act_start[]"
+                                                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+
+                                                </td>
+
+                                                <td class="border border-gray-300 p-1">
+
+                                                    <input type="date" name="act_finish[]"
+                                                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+
+                                                </td>
+
+
+                                                <td class="border border-gray-300 p-1">
+
+                                                    <input type="text" value="Automatic" readonly tabindex="-1"
+                                                        class="w-full rounded border border-gray-300
                                                             px-2 py-1 text-gray-500 text-center
                                                             text-[11px]
                                                             bg-gray-100
                                                             pointer-events-none
                                                             select-none">
-                                                    </td>
+                                                </td>
 
-                                                    {{-- UNIT STATUS --}}
-                                                    @for ($i = 1; $i <= $project->workorder->quantity; $i++)
-                                                        <td class="border border-gray-300 p-1 bg-cyan-50">
+                                                <td class="border border-gray-300 p-2 text-center">
 
-                                                            <select name="unit_status_new[0][{{ $i }}]"
-                                                                class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+                                                    <span
+                                                        style="
+                                                        color:#64748b;
+                                                        font-size:11px;
+                                                        font-style:italic;
+                                                    ">
 
-                                                                <option value="0">
+                                                        Auto Detail
 
-                                                                    Not Started
+                                                    </span>
 
-                                                                </option>
+                                                </td>
 
-                                                                <option value="1">
+                                                <td class="border border-gray-300 p-1">
 
-                                                                    In Progress
+                                                    <select name="priority[]"
+                                                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
 
-                                                                </option>
+                                                        <option value="High">
+                                                            High
+                                                        </option>
 
-                                                                <option value="2">
+                                                        <option value="Medium">
+                                                            Medium
+                                                        </option>
 
-                                                                    Done
+                                                        <option value="Low">
+                                                            Low
+                                                        </option>
 
-                                                                </option>
+                                                    </select>
 
-                                                            </select>
+                                                </td>
+                                            </tr>
 
-                                                        </td>
-                                                    @endfor
+                                        </tbody>
 
+                                    </table>
 
-
-                                                    <td class="border border-gray-300 p-1">
-
-                                                        <select name="priority[]"
-                                                            class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-                                                            <option value="High">
-                                                                High
-                                                            </option>
-
-                                                            <option value="Medium">
-                                                                Medium
-                                                            </option>
-
-                                                            <option value="Low">
-                                                                Low
-                                                            </option>
-
-                                                        </select>
-
-                                                    </td>
-                                                </tr>
-
-                                            </tbody>
-
-                                        </table>
-
-                                    </div>
+                                </div>
 
 
 
-                                    {{-- SAVE --}}
-                                    <div class="mt-5 text-end">
+                                {{-- SAVE --}}
+                                <div class="mt-5 text-end">
 
-                                        <button type="submit"
-                                            class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-xl font-bold shadow-lg">
+                                    <button type="submit"
+                                        class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-xl font-bold shadow-lg">
 
-                                            Save Task
+                                        Save Task
 
-                                        </button>
+                                    </button>
 
-                                    </div>
+                                </div>
 
-                                </form>
+                            </form>
 
-                            </td>
+                        </td>
 
-                        </tr>
+                    </tr>
 
-                    </tbody>
+                </tbody>
 
-                </table>
-
-            </div>
+            </table>
 
         </div>
+
+    </div>
 
     </div>
 
@@ -712,6 +874,8 @@
                     ],
 
                     borderRadius: 12,
+                    barThickness: 60,
+                    maxBarThickness: 80,
 
                     borderSkipped: false,
 
@@ -720,6 +884,9 @@
             },
 
             options: {
+                animation: false,
+
+                devicePixelRatio: 2,
 
                 responsive: true,
 
@@ -758,156 +925,60 @@
                     'taskTable' + projectId
                 );
 
-            let qty =
-                {{ $project->workorder->quantity ?? 0 }};
+            <
+            td class = "border border-gray-300 p-2 text-center" >
 
-            let unitColumns = '';
+            <
+            span style = "
+            color: #64748b;
+                                                                    font-size:11px;
+                                                                    font-style:italic;
+                                                                ">
 
-            for (let i = 1; i <= qty; i++) {
+                                                                    Auto Detail
 
-                unitColumns += `
+                                                                </span>
 
-                <td class="border border-gray-300 p-1 bg-cyan-50">
+                                                            </td>
 
-                    <select
-                        name="unit_status_new[\${rowIndex}][${i}]"
-                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+                                                                        <td class= "border border-gray-300 p-1" >
 
-                        <option value="0">
+                <
+                select
+            name = "priority[]"
+            class = "w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]" >
 
-                            Not Started
+            <
+            option value = "High" >
+                High <
+                /option>
 
-                        </option>
+                <
+                option value = "Medium" >
+                Medium <
+                /option>
 
-                        <option value="1">
+                <
+                option value = "Low" >
+                Low <
+                /option>
 
-                            In Progress
+                <
+                /select>
 
-                        </option>
+                <
+                /td>
 
-                        <option value="2">
+                <
+                /tr>
 
-                            Done
+            `;
 
-                        </option>
-
-                    </select>
-
-                </td>
-                `;
-            }
-
-            let rowIndex = table.rows.length;
-            let row = `
-        <tr class="bg-white text-black">
-
-            <td class="border border-gray-300 p-1">
-
-                <input
-                    type="text"
-                    name="task_name[]"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-            </td>
-
-            <td class="border border-gray-300 p-1">
-
-                <input
-                    type="text"
-                    name="pic[]"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-            </td>
-
-            <td class="border border-gray-300 p-1">
-
-                <textarea
-                    name="activity_detail[]"
-                    rows="1"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]"></textarea>
-
-            </td>
-
-            <td class="border border-gray-300 p-1">
-
-                <input
-                    type="date"
-                    name="bl_start[]"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-            </td>
-
-            <td class="border border-gray-300 p-1">
-
-                <input
-                    type="date"
-                    name="bl_finish[]"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-            </td>
-
-            <td class="border border-gray-300 p-1">
-
-                <input
-                    type="date"
-                    name="act_start[]"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-            </td>
-
-            <td class="border border-gray-300 p-1">
-
-                <input
-                    type="date"
-                    name="act_finish[]"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-            </td>
-
-
-            <td class="border border-gray-300 p-1">
-
-                <input
-                    type="number"
-                    name="duration[]"
-                    value="0"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-            </td>
-
-            ${unitColumns}
-
-            <td class="border border-gray-300 p-1">
-
-                <select
-                    name="priority[]"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-                    <option value="High">
-                        High
-                    </option>
-
-                    <option value="Medium">
-                        Medium
-                    </option>
-
-                    <option value="Low">
-                        Low
-                    </option>
-
-                </select>
-
-            </td>
-
-        </tr>
-
-    `;
-
-            table.insertAdjacentHTML(
-                'beforeend',
-                row
-            );
-        }
+                                                                        table.insertAdjacentHTML(
+                                                                            'beforeend',
+                                                                            row
+                                                                        );
+                                                                    }
     </script>
 
     <script>
@@ -1200,34 +1271,60 @@
 
                 .then(data => {
 
-                    let html = '';
-
-                    if (value == 0) {
-
-                        html =
-                            `<span class="text-gray-500">
-                    Not Started
-                </span>`;
-
-                    } else if (value == 1) {
-
-                        html =
-                            `<span class="text-yellow-600">
-                    In Progress
-                </span>`;
-
-                    } else {
-
-                        html =
-                            `<span class="text-green-600">
-                    Complete
-                </span>`;
-                    }
-
-                    td.innerHTML = html;
+                    console.log('saved');
 
                 });
         }
+
+        function toggleUnitDetail(id) {
+
+            let row =
+                document.getElementById(
+                    'unitDetail' + id
+                );
+
+            if (
+                row.style.display === 'none'
+            ) {
+
+                row.style.display =
+                    'table-row';
+
+            } else {
+
+                row.style.display =
+                    'none';
+            }
+        }
+
+        window.addEventListener(
+            'DOMContentLoaded',
+            function() {
+
+                let openId =
+                    localStorage.getItem(
+                        'openTaskDetail'
+                    );
+
+                if (openId) {
+
+                    let row =
+                        document.getElementById(
+                            'unitDetail' + openId
+                        );
+
+                    if (row) {
+
+                        row.style.display =
+                            'table-row';
+                    }
+
+                    localStorage.removeItem(
+                        'openTaskDetail'
+                    );
+                }
+            }
+        );
     </script>
 
 @endsection
