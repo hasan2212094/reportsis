@@ -405,6 +405,34 @@ $completePercent =
     ? round(($complete / $totalCells) * 100)
     : 0;
 
+$overallProgress = 0;
+
+if ($totalCells > 0) {
+
+    $overallProgress = round(
+
+        (
+
+            ($inProgress * 50)
+
+            +
+
+            ($complete * 100)
+
+        )
+
+        / $totalCells
+
+    );
+
+}
+
+$project->update([
+
+    'persentase_A' => $overallProgress
+
+]);
+
     return view(
         'page.Projectmanager.detail',
         compact('project','projectStatus','notStartedPercent','inProgressPercent','completePercent'

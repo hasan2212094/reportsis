@@ -88,11 +88,11 @@
                         @forelse ($projectmanagers as $project)
                             @php
 
-                                $woDate = \Carbon\Carbon::parse($project->workorder->wo_date);
+                                $currentDate = \Carbon\Carbon::now();
 
                                 $finishDate = \Carbon\Carbon::parse($project->workorder->pekerjaan_selesai);
 
-                                $daysRemaining = $woDate->diffInDays($finishDate);
+                                $daysRemaining = $currentDate->diffInDays($finishDate, false) + 1;
 
                             @endphp
 
