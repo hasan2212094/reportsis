@@ -287,6 +287,10 @@
                                                         ACT START
                                                     </th>
 
+                                                    <th class="border border-gray-300 p-2 w-[120px]">
+                                                        ACT FINISH
+                                                    </th>
+
                                                     <th class="border border-gray-300 p-2 w-[90px]">
                                                         DURATION
                                                     </th>
@@ -399,6 +403,18 @@
 
                                                         </td>
 
+                                                        <td class="border border-gray-300 p-2"
+                                                            ondblclick="
+                                                            editDateCell(
+                                                                this,
+                                                                {{ $task->id }},
+                                                                'act_finish'
+                                                            )
+                                                        ">
+
+                                                            {{ $task->act_finish }}
+
+                                                        </td>
                                                         <td class="border border-gray-300 p-2 font-bold text-blue-700">
 
                                                             @php
@@ -531,18 +547,25 @@
 
                                                     </td>
 
-
-
                                                     <td class="border border-gray-300 p-1">
 
-                                                        <input type="number" name="duration[]" value="0"
+                                                        <input type="date" name="act_finish[]"
                                                             class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
 
                                                     </td>
 
 
+                                                    <td class="border border-gray-300 p-1">
 
-                                                    {{-- AUTO UNIT --}}
+                                                        <input type="text" value="Automatic" readonly tabindex="-1"
+                                                            class="w-full rounded border border-gray-300
+                                                            px-2 py-1 text-gray-500 text-center
+                                                            text-[11px]
+                                                            bg-gray-100
+                                                            pointer-events-none
+                                                            select-none">
+                                                    </td>
+
                                                     {{-- UNIT STATUS --}}
                                                     @for ($i = 1; $i <= $project->workorder->quantity; $i++)
                                                         <td class="border border-gray-300 p-1 bg-cyan-50">
@@ -831,6 +854,16 @@
                     class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
 
             </td>
+
+            <td class="border border-gray-300 p-1">
+
+                <input
+                    type="date"
+                    name="act_finish[]"
+                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+
+            </td>
+
 
             <td class="border border-gray-300 p-1">
 
