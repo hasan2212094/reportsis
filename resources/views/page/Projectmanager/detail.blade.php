@@ -1,4 +1,5 @@
 @extends('kerangka.master')
+
 @section('title', 'Project Plan Monitoring')
 
 @section('content')
@@ -7,20 +8,16 @@
 
         <div class="bg-white rounded-3xl shadow-lg border border-gray-300 p-4">
 
-            {{-- HEADER --}}
-            <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+            {{-- TITLE --}}
+            <div class="mb-6">
 
-                <div>
+                <h1 class="text-5xl font-black text-slate-700 tracking-tight">
 
-                    <h1 class="text-4xl font-bold text-black">
-                        Project Plan Monitoring
-                    </h1>
+                    Project Plan Monitoring
 
-                </div>
+                </h1>
 
             </div>
-
-
 
             {{-- PROJECT TABLE --}}
             <div class="w-full overflow-hidden rounded-2xl border border-gray-300">
@@ -73,11 +70,11 @@
 
                         @php
 
-                            $today = \Carbon\Carbon::now();
+                            $currentDate = \Carbon\Carbon::now();
 
-                            $deadline = \Carbon\Carbon::parse($project->target_date);
+                            $finishDate = \Carbon\Carbon::parse($project->workorder->pekerjaan_selesai);
 
-                            $daysRemaining = $today->diffInDays($deadline, false);
+                            $daysRemaining = $currentDate->diffInDays($finishDate, false) + 1;
 
                         @endphp
 
@@ -102,7 +99,7 @@
 
                             <td class="border border-gray-300 px-3 py-3">
 
-                                {{ \Carbon\Carbon::parse($project->date_awal)->translatedFormat('d M Y') }}
+                                {{ \Carbon\Carbon::parse($project->workorder->wo_date)->translatedFormat('d M Y') }}
 
                             </td>
 
@@ -110,7 +107,7 @@
 
                             <td class="border border-gray-300 px-3 py-3">
 
-                                {{ \Carbon\Carbon::parse($project->target_date)->translatedFormat('d M Y') }}
+                                {{ \Carbon\Carbon::parse($project->workorder->pekerjaan_selesai)->translatedFormat('d M Y') }}
 
                             </td>
 
@@ -141,17 +138,15 @@
 
                             </td>
 
-
-
                             <td class="border border-gray-300 px-3 py-3">
 
-                                @if ($project->persentase_A == 0)
+                                @if ($projectStatus == 'NOT STARTED')
                                     <span class="text-gray-700 font-bold">
 
                                         Not Started
 
                                     </span>
-                                @elseif ($project->persentase_A == 100)
+                                @elseif ($projectStatus == 'COMPLETE')
                                     <span class="text-green-700 font-bold">
 
                                         Completed
@@ -167,15 +162,9 @@
 
                             </td>
 
-
-
                             <td class="border border-gray-300 px-3 py-3 bg-cyan-100 text-black font-bold">
 
-                                @if ($project->persentase_A == 0)
-                                    {{ $project->persentase_A }}%
-                                @else
-                                    0%
-                                @endif
+                                {{ $notStartedPercent }}%
 
                             </td>
 
@@ -183,11 +172,7 @@
 
                             <td class="border border-gray-300 px-3 py-3 bg-yellow-100 text-black font-bold">
 
-                                @if ($project->persentase_A > 0 && $project->persentase_A < 100)
-                                    {{ $project->persentase_A }}%
-                                @else
-                                    0%
-                                @endif
+                                {{ $inProgressPercent }}%
 
                             </td>
 
@@ -195,11 +180,7 @@
 
                             <td class="border border-gray-300 px-3 py-3 bg-green-100 text-black font-bold">
 
-                                @if ($project->persentase_A == 100)
-                                    {{ $project->persentase_A }}%
-                                @else
-                                    0%
-                                @endif
+                                {{ $completePercent }}%
 
                             </td>
 
@@ -327,10 +308,6 @@
                                                         PRIORITY
                                                     </th>
 
-                                                    <th class="border border-gray-300 p-2 w-[90px]">
-                                                        %
-                                                    </th>
-
                                                 </tr>
 
                                             </thead>
@@ -347,71 +324,149 @@
                                                 @foreach ($project->tasks as $task)
                                                     <tr class="bg-white text-black">
 
-                                                        <td class="border border-gray-300 p-2">
-
+                                                        <td class="border border-gray-300 p-2"
+                                                            ondblclick="
+                                                            editCell(
+                                                                this,
+                                                                {{ $task->id }},
+                                                                'task_name'
+                                                            )
+                                                             ">
                                                             {{ $task->task_name }}
 
                                                         </td>
 
-                                                        <td class="border border-gray-300 p-2">
+                                                        <td class="border border-gray-300 p-2"
+                                                            ondblclick="
+                                                            editCell(
+                                                                this,
+                                                                {{ $task->id }},
+                                                                'pic'
+                                                            )
+                                                            ">
 
                                                             {{ $task->pic }}
 
                                                         </td>
 
-                                                        <td class="border border-gray-300 p-2 text-left">
+                                                        <td class="border border-gray-300 p-2 text-left"
+                                                            ondblclick="
+                                                            editCell(
+                                                                this,
+                                                                {{ $task->id }},
+                                                                'activity_detail'
+                                                            )
+                                                            ">
 
                                                             {{ $task->activity_detail }}
 
                                                         </td>
 
-                                                        <td class="border border-gray-300 p-2">
-
+                                                        <td class="border border-gray-300 p-2"
+                                                            ondblclick="
+                                                            editDateCell(
+                                                                this,
+                                                                {{ $task->id }},
+                                                                'bl_start'
+                                                            )
+                                                             ">
                                                             {{ $task->bl_start }}
-
                                                         </td>
 
-                                                        <td class="border border-gray-300 p-2">
+                                                        <td class="border border-gray-300 p-2"
+                                                            ondblclick="
+                                                            editDateCell(
+                                                                this,
+                                                                {{ $task->id }},
+                                                                'bl_finish'
+                                                            )
+                                                        ">
 
                                                             {{ $task->bl_finish }}
 
                                                         </td>
 
-                                                        <td class="border border-gray-300 p-2">
+                                                        <td class="border border-gray-300 p-2"
+                                                            ondblclick="
+                                                            editDateCell(
+                                                                this,
+                                                                {{ $task->id }},
+                                                                'act_start'
+                                                            )
+                                                        ">
 
                                                             {{ $task->act_start }}
 
                                                         </td>
 
-                                                        <td class="border border-gray-300 p-2 font-bold">
+                                                        <td class="border border-gray-300 p-2 font-bold text-blue-700">
 
-                                                            {{ $task->duration }}
+                                                            @php
+
+                                                                $start = \Carbon\Carbon::parse($task->bl_start);
+
+                                                                $finish = \Carbon\Carbon::parse($task->bl_finish);
+
+                                                                $days = $start->diffInDays($finish) + 1;
+
+                                                            @endphp
+
+                                                            {{ $days }} Days
 
                                                         </td>
 
-
-
-                                                        {{-- UNIT --}}
+                                                        {{-- UNIT STATUS --}}
                                                         @for ($i = 1; $i <= $project->workorder->quantity; $i++)
-                                                            <td
-                                                                class="border border-gray-300 p-2 bg-cyan-100 text-black font-bold">
+                                                            @php
 
-                                                                UNIT {{ $i }}
+                                                                $status = $task->{'unit_' . $i} ?? 0;
+
+                                                            @endphp
+
+                                                            <td class="border border-gray-300 p-2 text-center font-bold cursor-pointer"
+                                                                ondblclick="
+                                                                editUnitStatus(
+                                                                    this,
+                                                                    {{ $task->id }},
+                                                                    'unit_{{ $i }}',
+                                                                    {{ $status }}
+                                                                )
+                                                            ">
+
+                                                                @if ($status == 0)
+                                                                    <span class="text-gray-500">
+
+                                                                        Not Started
+
+                                                                    </span>
+                                                                @elseif ($status == 1)
+                                                                    <span class="text-yellow-600">
+
+                                                                        In Progress
+
+                                                                    </span>
+                                                                @else
+                                                                    <span class="text-green-600">
+
+                                                                        Complete
+
+                                                                    </span>
+                                                                @endif
 
                                                             </td>
                                                         @endfor
 
+                                                        <td class="border border-gray-300 p-2
+                                                        font-bold text-center cursor-pointer"
+                                                            ondblclick="
+                                                            editSelectCell(
+                                                                this,
+                                                                {{ $task->id }},
+                                                                'priority'
+                                                            )
+                                                        ">
 
-
-                                                        <td class="border border-gray-300 p-2">
-
-                                                            {{ $task->priority }}
-
-                                                        </td>
-
-                                                        <td class="border border-gray-300 p-2 font-bold text-blue-700">
-
-                                                            {{ $task->percentage }}%
+                                                            {{ $task->priority ?? 'High' }}
 
                                                         </td>
 
@@ -488,11 +543,32 @@
 
 
                                                     {{-- AUTO UNIT --}}
+                                                    {{-- UNIT STATUS --}}
                                                     @for ($i = 1; $i <= $project->workorder->quantity; $i++)
-                                                        <td
-                                                            class="border border-gray-300 p-2 bg-cyan-100 text-black font-bold">
+                                                        <td class="border border-gray-300 p-1 bg-cyan-50">
 
-                                                            UNIT {{ $i }}
+                                                            <select name="unit_status_new[0][{{ $i }}]"
+                                                                class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
+
+                                                                <option value="0">
+
+                                                                    Not Started
+
+                                                                </option>
+
+                                                                <option value="1">
+
+                                                                    In Progress
+
+                                                                </option>
+
+                                                                <option value="2">
+
+                                                                    Done
+
+                                                                </option>
+
+                                                            </select>
 
                                                         </td>
                                                     @endfor
@@ -519,16 +595,6 @@
                                                         </select>
 
                                                     </td>
-
-
-
-                                                    <td class="border border-gray-300 p-1">
-
-                                                        <input type="number" name="percentage[]" value="0"
-                                                            class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-                                                    </td>
-
                                                 </tr>
 
                                             </tbody>
@@ -657,7 +723,6 @@
                     }
 
                 }
-
             }
 
         });
@@ -679,18 +744,38 @@
 
                 unitColumns += `
 
-            <td class="border border-gray-300 p-2 bg-cyan-100 text-black font-bold">
+                <td class="border border-gray-300 p-1 bg-cyan-50">
 
-                UNIT ${i}
+                    <select
+                        name="unit_status_new[\${rowIndex}][${i}]"
+                        class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
 
-            </td>
+                        <option value="0">
 
-        `;
+                            Not Started
+
+                        </option>
+
+                        <option value="1">
+
+                            In Progress
+
+                        </option>
+
+                        <option value="2">
+
+                            Done
+
+                        </option>
+
+                    </select>
+
+                </td>
+                `;
             }
 
-
+            let rowIndex = table.rows.length;
             let row = `
-
         <tr class="bg-white text-black">
 
             <td class="border border-gray-300 p-1">
@@ -781,16 +866,6 @@
 
             </td>
 
-            <td class="border border-gray-300 p-1">
-
-                <input
-                    type="number"
-                    name="percentage[]"
-                    value="0"
-                    class="w-full rounded border border-gray-300 px-2 py-1 text-black text-[11px]">
-
-            </td>
-
         </tr>
 
     `;
@@ -799,6 +874,326 @@
                 'beforeend',
                 row
             );
+        }
+    </script>
+
+    <script>
+        function editCell(td, id, field) {
+            let oldValue =
+                td.innerText.trim();
+
+            td.innerHTML = `
+
+            <input
+            type="text"
+            value="${oldValue}"
+            class="w-full border rounded px-2 py-1 text-black"
+            id="editInput">
+
+            `;
+
+            let input =
+                td.querySelector('#editInput');
+
+            input.focus();
+
+
+
+            input.addEventListener(
+                'blur',
+                function() {
+
+                    saveCell(
+                        td,
+                        id,
+                        field,
+                        this.value
+                    );
+
+                }
+            );
+
+
+
+            input.addEventListener(
+                'keydown',
+                function(e) {
+
+                    if (e.key === 'Enter') {
+
+                        this.blur();
+
+                    }
+
+                }
+            );
+        }
+
+        function editSelectCell(
+            td,
+            id,
+            field
+        ) {
+            let current =
+                td.innerText.trim();
+
+
+
+            td.innerHTML = `
+
+        <select
+            class="w-full border rounded px-2 py-1 text-black"
+            id="editSelect">
+
+            <option value="High"
+                ${current == 'High' ? 'selected' : ''}>
+
+                High
+
+            </option>
+
+            <option value="Medium"
+                ${current == 'Medium' ? 'selected' : ''}>
+
+                Medium
+
+            </option>
+
+            <option value="Low"
+                ${current == 'Low' ? 'selected' : ''}>
+
+                Low
+
+            </option>
+
+        </select>
+
+    `;
+
+
+
+            let select =
+                td.querySelector('#editSelect');
+
+            select.focus();
+
+
+
+            select.addEventListener(
+                'change',
+                function() {
+
+                    saveCell(
+                        td,
+                        id,
+                        field,
+                        this.value
+                    );
+
+                }
+            );
+        }
+
+        function editDateCell(td, id, field) {
+            let oldValue =
+                td.innerText.trim();
+
+            td.innerHTML = `
+
+        <input
+            type="date"
+            value="${oldValue}"
+            class="w-full border rounded px-2 py-1 text-black"
+            id="editDateInput">
+
+    `;
+
+            let input =
+                td.querySelector('#editDateInput');
+
+            input.focus();
+
+
+            input.addEventListener(
+                'change',
+                function() {
+
+                    saveCell(
+                        td,
+                        id,
+                        field,
+                        this.value
+                    );
+
+                }
+            );
+        }
+
+
+        function saveCell(td, id, field, value) {
+            fetch(
+                    "{{ route('projectmanager.task.updatecell') }}", {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type": "application/json",
+
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            id: id,
+
+                            field: field,
+
+                            value: value
+
+                        })
+
+                    }
+                )
+
+                .then(res => res.json())
+
+                .then(data => {
+
+                    td.innerHTML = value;
+
+                })
+
+                .catch(() => {
+
+                    td.innerHTML = value;
+
+                });
+        }
+
+        function editUnitStatus(
+            td,
+            id,
+            field,
+            current
+        ) {
+            td.innerHTML = `
+
+        <select
+            class="w-full border rounded px-2 py-1 text-black text-sm"
+            id="unitStatusSelect">
+
+            <option value="0"
+                ${current == 0 ? 'selected' : ''}>
+
+                Not Started
+
+            </option>
+
+            <option value="1"
+                ${current == 1 ? 'selected' : ''}>
+
+                In Progress
+
+            </option>
+
+            <option value="2"
+                ${current == 2 ? 'selected' : ''}>
+
+                Complete
+
+            </option>
+
+        </select>
+
+    `;
+
+            let select =
+                td.querySelector('#unitStatusSelect');
+
+            select.focus();
+
+
+
+            select.addEventListener(
+                'change',
+                function() {
+
+                    saveUnitStatus(
+                        td,
+                        id,
+                        field,
+                        this.value
+                    );
+
+                }
+            );
+        }
+
+        function saveUnitStatus(
+            td,
+            id,
+            field,
+            value
+        ) {
+            fetch(
+                    "{{ route('projectmanager.task.updatecell') }}", {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type": "application/json",
+
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            id: id,
+
+                            field: field,
+
+                            value: value
+
+                        })
+
+                    }
+                )
+
+                .then(res => res.json())
+
+                .then(data => {
+
+                    let html = '';
+
+                    if (value == 0) {
+
+                        html =
+                            `<span class="text-gray-500">
+                    Not Started
+                </span>`;
+
+                    } else if (value == 1) {
+
+                        html =
+                            `<span class="text-yellow-600">
+                    In Progress
+                </span>`;
+
+                    } else {
+
+                        html =
+                            `<span class="text-green-600">
+                    Complete
+                </span>`;
+                    }
+
+                    td.innerHTML = html;
+
+                });
         }
     </script>
 

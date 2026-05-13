@@ -21,7 +21,27 @@ class ProjectManagerTask extends Model
         'act_finish',
         'duration',
         'priority',
-        'percentage'
+        'percentage',
+        'unit_1',
+        'unit_2',
+        'unit_3',
+        'unit_4',
+        'unit_5',
+        'unit_6',
+        'unit_7',
+        'unit_8',
+        'unit_9',
+        'unit_10',
+        'unit_11',
+        'unit_12',
+        'unit_13',
+        'unit_14',
+        'unit_15',
+        'unit_16',
+        'unit_17',
+        'unit_18',
+        'unit_19',
+        'unit_20',
 
     ];
 

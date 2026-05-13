@@ -199,55 +199,90 @@ public function storeTask(Request $request)
 
             'project_manager_id' => 'required',
 
-            'task_name' => 'required',
+            'task_name.*' => 'required',
 
         ]);
 
 
-        // DURATION AUTO
-        $duration = 0;
+        foreach ($request->task_name as $index => $taskName) {
 
-        if ($request->bl_start && $request->bl_finish) {
+            // AUTO DURATION
+            $duration = 0;
 
-            $duration =
-                Carbon::parse($request->bl_start)
-                ->diffInDays($request->bl_finish);
+            if (
+                !empty($request->bl_start[$index]) &&
+                !empty($request->bl_finish[$index])
+            ) {
+
+                $duration =
+                    Carbon::parse($request->bl_start[$index])
+                        ->diffInDays(
+                            Carbon::parse($request->bl_finish[$index])
+                        );
+            }
+
+
+            // BASE DATA
+            $data = [
+
+                'project_manager_id' =>
+                    $request->project_manager_id,
+
+                'task_name' =>
+                    $request->task_name[$index] ?? null,
+
+                'pic' =>
+                    $request->pic[$index] ?? null,
+
+                'activity_detail' =>
+                    $request->activity_detail[$index] ?? null,
+
+                'bl_start' =>
+                    $request->bl_start[$index] ?? null,
+
+                'bl_finish' =>
+                    $request->bl_finish[$index] ?? null,
+
+                'act_start' =>
+                    $request->act_start[$index] ?? null,
+
+                'act_finish' =>
+                    $request->act_finish[$index] ?? null,
+
+                'duration' =>
+                    $duration,
+
+                'priority' =>
+                    $request->priority[$index] ?? null,
+
+                'percentage' =>
+                    $request->percentage[$index] ?? 0,
+
+            ];
+
+
+            // AUTO SAVE UNIT STATUS
+            for ($i = 1; $i <= 20; $i++) {
+
+                $data['unit_'.$i] =
+                    $request->unit_status_new[$index][$i] ?? 0;
+
+            }
+
+
+            // CREATE TASK
+            ProjectManagerTask::create($data);
+
         }
 
 
-        ProjectManagerTask::create([
-
-            'project_manager_id' => $request->project_manager_id,
-
-            'task_name' => $request->task_name,
-
-            'pic' => $request->pic,
-
-            'activity_detail' => $request->activity_detail,
-
-            'bl_start' => $request->bl_start,
-
-            'bl_finish' => $request->bl_finish,
-
-            'act_start' => $request->act_start,
-
-            'act_finish' => $request->act_finish,
-
-            'duration' => $duration,
-
-            'priority' => $request->priority,
-
-            'percentage' => 0,
-
-        ]);
-
-
         return back()
-            ->with('success', 'Task berhasil ditambahkan');
+            ->with('success', '✅ Task berhasil ditambahkan');
 
     } catch (\Exception $e) {
 
         return back()
+            ->withInput()
             ->with('error', $e->getMessage());
     }
 }
@@ -260,10 +295,122 @@ public function detail($id)
         'tasks'
     ])->findOrFail($id);
 
+
+
+    // AUTO CALCULATE PERCENTAGE
+    foreach ($project->units as $unit) {
+
+        $totalValue = 0;
+
+        $totalTask =
+            $project->tasks->count();
+
+
+        foreach ($project->tasks as $task) {
+
+            $status =
+                $task->{'unit_'.$unit->unit_no} ?? 0;
+
+
+            // STATUS VALUE
+            if ($status == 2) {
+
+                // COMPLETE
+                $totalValue += 100;
+
+            } elseif ($status == 1) {
+
+                // IN PROGRESS
+                $totalValue += 50;
+
+            }
+        }
+
+
+        // FINAL PERCENTAGE
+        $unit->persentase =
+            $totalTask > 0
+            ? round($totalValue / $totalTask)
+            : 0;
+    }
+
+
+$totalCells = 0;
+
+$notStarted = 0;
+
+$inProgress = 0;
+
+$complete = 0;
+
+
+
+foreach ($project->tasks as $task) {
+
+    for (
+        $i = 1;
+        $i <= $project->workorder->quantity;
+        $i++
+    ) {
+
+        $status =
+            $task->{'unit_'.$i} ?? 0;
+
+
+        $totalCells++;
+
+
+        if ($status == 0) {
+
+            $notStarted++;
+
+        } elseif ($status == 1) {
+
+            $inProgress++;
+
+        } else {
+
+            $complete++;
+        }
+    }
+}
+
+if ($complete == $totalCells && $totalCells > 0) {
+
+    $projectStatus = 'COMPLETE';
+
+} elseif ($inProgress > 0 || $complete > 0) {
+
+    $projectStatus = 'IN PROGRESS';
+
+} else {
+
+    $projectStatus = 'NOT STARTED';
+}
+
+$notStartedPercent =
+    $totalCells > 0
+    ? round(($notStarted / $totalCells) * 100)
+    : 0;
+
+
+$inProgressPercent =
+    $totalCells > 0
+    ? round(($inProgress / $totalCells) * 100)
+    : 0;
+
+
+$completePercent =
+    $totalCells > 0
+    ? round(($complete / $totalCells) * 100)
+    : 0;
+
     return view(
         'page.Projectmanager.detail',
-        compact('project')
+        compact('project','projectStatus','notStartedPercent','inProgressPercent','completePercent'
+)
     );
+
 }
 
 public function dashboard()
@@ -280,6 +427,40 @@ public function dashboard()
     );
 }
 
+public function updateCell(Request $request)
+{
+    try {
+
+        $task = ProjectManagerTask::findOrFail(
+            $request->id
+        );
+
+
+        $task->update([
+
+            $request->field =>
+                $request->value
+
+        ]);
+
+
+        return response()->json([
+
+            'success' => true
+
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+
+            'success' => false,
+
+            'message' => $e->getMessage()
+
+        ]);
+    }
+}
 
 
 }

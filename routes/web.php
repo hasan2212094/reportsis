@@ -243,6 +243,11 @@ Route::get(
     [ProjectManagerController::class, 'dashboard']
 )->name('projectdashboard.index');
 
+Route::post(
+    '/projectmanager/task/update-cell',
+    [ProjectManagerController::class, 'updateCell']
+)->name('projectmanager.task.updatecell');
+
 
 
    

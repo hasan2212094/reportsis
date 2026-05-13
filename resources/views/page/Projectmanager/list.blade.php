@@ -20,17 +20,16 @@
 
             </div>
 
-
-
-            {{-- BUTTON --}}
-            <a href="{{ route('page.projectmanager.create') }}"
-                class="bg-blue-600 hover:bg-blue-700 text-black px-6 py-3 rounded-2xl font-bold shadow-lg transition-all duration-200">
-
-                + Add Project
-
-            </a>
-
         </div>
+        {{-- BUTTON --}}
+        <a href="{{ route('page.projectmanager.create') }}"
+            class="bg-blue-600 hover:bg-blue-700 text-black px-6 py-3 rounded-2xl font-bold shadow-lg transition-all duration-200">
+
+            + Add Project
+
+
+
+        </a>
 
 
 
@@ -89,11 +88,11 @@
                         @forelse ($projectmanagers as $project)
                             @php
 
-                                $today = \Carbon\Carbon::now();
+                                $woDate = \Carbon\Carbon::parse($project->workorder->wo_date);
 
-                                $deadline = \Carbon\Carbon::parse($project->target_date);
+                                $finishDate = \Carbon\Carbon::parse($project->workorder->pekerjaan_selesai);
 
-                                $daysRemaining = $today->diffInDays($deadline, false);
+                                $daysRemaining = $woDate->diffInDays($finishDate);
 
                             @endphp
 

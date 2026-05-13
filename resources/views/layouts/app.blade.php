@@ -146,13 +146,6 @@
             </div>
         </nav>
 
-        {{-- HEADER --}}
-        <header class="max-w-7xl mx-auto px-4 mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">
-                @yield('header', '📊 Rekap Biaya Listrik CNC')
-            </h1>
-        </header>
-
         {{-- CONTENT --}}
         <main class="max-w-7xl mx-auto px-4">
             @yield('content')
