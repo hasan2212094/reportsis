@@ -930,18 +930,19 @@
 
             <
             span style = "
-            color: #64748b;
-                                                                    font-size:11px;
-                                                                    font-style:italic;
-                                                                ">
+            color:
+                #64748b;
+                                                                                font-size:11px;
+                                                                                font-style:italic;
+                                                                            ">
 
-                                                                    Auto Detail
+                                                                                Auto Detail
 
-                                                                </span>
+                                                                            </span>
 
-                                                            </td>
+                                                                        </td>
 
-                                                                        <td class= "border border-gray-300 p-1" >
+                                                                                    <td class= "border border-gray-300 p-1" >
 
                 <
                 select
@@ -974,11 +975,11 @@
 
             `;
 
-                                                                        table.insertAdjacentHTML(
-                                                                            'beforeend',
-                                                                            row
-                                                                        );
-                                                                    }
+                                                                                    table.insertAdjacentHTML(
+                                                                                        'beforeend',
+                                                                                        row
+                                                                                    );
+                                                                                }
     </script>
 
     <script>
